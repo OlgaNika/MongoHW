@@ -57,6 +57,7 @@ public class BlogPostDAO {
         // - Don't forget to create an empty list of comments
         // - for the value of the date key, today's datetime is fine.
         // - tags are already in list form that implements suitable interface.
+        //todo check comments
         // - we created the permalink for you above.
 
         // Build the post object and insert it
