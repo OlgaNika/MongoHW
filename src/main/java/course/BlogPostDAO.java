@@ -4,7 +4,10 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
 
+import java.util.Date;
 import java.util.List;
+
+import static com.mongodb.client.model.Filters.eq;
 
 public class BlogPostDAO {
     MongoCollection<Document> postsCollection;
@@ -19,7 +22,7 @@ public class BlogPostDAO {
         // XXX HW 3.2,  Work Here
         Document post = null;
 
-
+        post=postsCollection.find(eq("permalink", permalink)).first();
 
         return post;
     }
@@ -57,8 +60,9 @@ public class BlogPostDAO {
 
         // Build the post object and insert it
         Document post = new Document();
-
-
+        List<Document> comments=null;
+        post.append("author",username).append("body",body).append("permalink",permalink).append("tags",tags).append("comments",comments).append("date",new Date()).append("title",title);
+        postsCollection.insertOne(post);
         return permalink;
     }
 
