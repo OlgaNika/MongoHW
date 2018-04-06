@@ -47,7 +47,7 @@ public class UserDAO {
         Document user = new Document();
 
         user.append("_id", username).append("password", passwordHash);
-
+        System.out.println("adding "+username+";password"+password);
         if (email != null && !email.equals("")) {
             // the provided email address
             user.append("email", email);
