@@ -327,6 +327,8 @@ public class BlogController {
                 String body = StringEscapeUtils.escapeHtml4(request.queryParams("commentBody"));
                 String permalink = request.queryParams("permalink");
 
+                String username = sessionDAO.findUserNameBySessionId(getSessionCookie(request));
+
                 Document post = blogPostDAO.findByPermalink(permalink);
                 if (post == null) {
                     response.redirect("/post_not_found");
@@ -346,7 +348,7 @@ public class BlogController {
 
                     template.process(root, writer);
                 } else {
-                    blogPostDAO.addPostComment(name, email, body, permalink);
+                    blogPostDAO.addPostComment(name, email, body, permalink,username);
                     response.redirect("/post/" + permalink);
                 }
             }
