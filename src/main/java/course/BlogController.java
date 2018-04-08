@@ -54,6 +54,10 @@ public class BlogController {
     private final BlogPostDAO blogPostDAO;
     private final UserDAO userDAO;
     private final SessionDAO sessionDAO;
+    private final ReportDAO reportDAO;
+    private final ExpenceDAO expenceDAO;
+
+
 
     public static void main(String[] args) throws IOException {
         if (args.length == 0) {
@@ -71,6 +75,13 @@ public class BlogController {
         blogPostDAO = new BlogPostDAO(blogDatabase);
         userDAO = new UserDAO(blogDatabase);
         sessionDAO = new SessionDAO(blogDatabase);
+
+        final MongoDatabase xpenserDatabase = mongoClient.getDatabase("xpenser");
+
+        reportDAO = new ReportDAO(xpenserDatabase);
+        expenceDAO = new ExpenceDAO(xpenserDatabase);
+
+
 
         cfg = createFreemarkerConfiguration();
         setPort(8082);
@@ -226,6 +237,72 @@ public class BlogController {
                 }
                 else {
                     SimpleHash root = new SimpleHash();
+
+                    root.put("username", username);
+
+                    template.process(root, writer);
+                }
+            }
+        });
+
+        get(new FreemarkerBasedRoute("/reports", "report_template.ftl") {
+            @Override
+            protected void doHandle(Request request, Response response, Writer writer) throws IOException, TemplateException {
+
+                String cookie = getSessionCookie(request);
+                String username = sessionDAO.findUserNameBySessionId(cookie);
+
+
+                SimpleHash root = new SimpleHash();
+
+                if (username != null) {
+                    root.put("username", username);
+                }
+
+                if (username == null) {
+                    System.out.println("welcome() can't identify the user, redirecting to signup");
+                    response.redirect("/signup");
+
+                }
+                else {
+                    List<Document> reports = reportDAO.findByDateDescending(30);
+
+                    root.put("reports", reports);
+
+                    root.put("username", username);
+
+                    template.process(root, writer);
+                }
+            }
+        });
+
+
+
+        get(new FreemarkerBasedRoute("/expensies/:report_id", "expense_template.ftl") {
+            @Override
+            protected void doHandle(Request request, Response response, Writer writer) throws IOException, TemplateException {
+                int report_id = new Integer(request.params(":report_id"));
+                System.out.println("report_id="+report_id);
+
+                String cookie = getSessionCookie(request);
+                String username = sessionDAO.findUserNameBySessionId(cookie);
+
+
+                SimpleHash root = new SimpleHash();
+
+                if (username != null) {
+                    root.put("username", username);
+                }
+
+                if (username == null) {
+                    System.out.println("welcome() can't identify the user, redirecting to signup");
+                    response.redirect("/signup");
+
+                }
+                else {
+                    List<Document> expenses = expenceDAO.findByDateDescending(report_id,20);
+
+                    root.put("expenses", expenses);
 
                     root.put("username", username);
 
