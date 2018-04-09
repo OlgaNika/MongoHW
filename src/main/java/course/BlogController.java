@@ -81,6 +81,17 @@ public class BlogController {
         reportDAO = new ReportDAO(xpenserDatabase);
         expenceDAO = new ExpenceDAO(xpenserDatabase);
 
+        //Create db for 'my activities', it will contain full set of items
+        //myactivities database
+        //activityDAO.java file
+        // newactivity_template.ftl to create new activities
+        //activity fields are when ( date can be set up automatically)
+        //what ( description of activity)
+        //duration in hours( 1, 2, 3 etc)
+        //activity-template.ftl to show created activities
+        // new freemaker routes to be added  to BlogController.InitializeRoutes() method
+        //get routes to view activities and post to create new activites
+        //
 
 
         cfg = createFreemarkerConfiguration();
