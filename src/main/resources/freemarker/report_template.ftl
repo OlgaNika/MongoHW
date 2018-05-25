@@ -15,7 +15,7 @@
 
 <#if reports?has_content>
   <#list reports as report>
-      Status ${report["status"]} <a href="/expensies/${report["id"]}">Name ${report["name"]}</a><br>
+      Status ${report["status"]} <a href="/expenses/${report["id"]}">Name ${report["name"]}</a><br>
       total: ${report["total"]}
       Report id : ${report["id"]}
       <hr>

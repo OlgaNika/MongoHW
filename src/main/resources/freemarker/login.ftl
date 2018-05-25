@@ -10,7 +10,7 @@
 
   </head>
 
-  <body>
+  <body bgcolor = #FFCC99>
     Need to Create an account? <a href="/signup">Signup</a><p>
     <h2>Login</h2>
     <form method="post">

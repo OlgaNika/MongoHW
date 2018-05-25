@@ -3,7 +3,7 @@
 <head>
     <title>Create a new post</title>
 </head>
-<body>
+<body  bgcolor = #FFFF99 >
 <#if username??>
     Welcome ${username} <a href="/logout">Logout</a> | <a href="/">Blog Home</a>
 

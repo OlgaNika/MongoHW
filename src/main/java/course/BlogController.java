@@ -16,8 +16,6 @@
 
 package course;
 
-import com.mongodb.DB;
-import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
 import com.mongodb.client.MongoDatabase;
@@ -42,7 +40,6 @@ import java.util.List;
 import static spark.Spark.get;
 import static spark.Spark.post;
 import static spark.Spark.setPort;
-
 /**
  * This class encapsulates the controllers for the blog web application.  It delegates all interaction with MongoDB
  * to three Data Access Objects (DAOs).
@@ -55,7 +52,7 @@ public class BlogController {
     private final UserDAO userDAO;
     private final SessionDAO sessionDAO;
     private final ReportDAO reportDAO;
-    private final ExpenceDAO expenceDAO;
+    private final ExpenseDAO expenseDAO;
 
 
 
@@ -70,16 +67,20 @@ public class BlogController {
 
     public BlogController(String mongoURIString) throws IOException {
         final MongoClient mongoClient = new MongoClient(new MongoClientURI(mongoURIString));
-        final MongoDatabase blogDatabase = mongoClient.getDatabase("blog");
+        final MongoDatabase blogDatabase = mongoClient.getDatabase("blog1");
 
         blogPostDAO = new BlogPostDAO(blogDatabase);
         userDAO = new UserDAO(blogDatabase);
         sessionDAO = new SessionDAO(blogDatabase);
 
-        final MongoDatabase xpenserDatabase = mongoClient.getDatabase("xpenser");
+       // final MongoDatabase expenserDatabase = mongoClient.getDatabase("xpenser");
 
-        reportDAO = new ReportDAO(xpenserDatabase);
-        expenceDAO = new ExpenceDAO(xpenserDatabase);
+ //       reportDAO = new ReportDAO(expenserDatabase);
+  //      expenseDAO = new ExpenseDAO(expenserDatabase);
+
+        reportDAO = new ReportDAO(blogDatabase);
+        expenseDAO = new ExpenseDAO(blogDatabase);
+
 
         //Create db for 'my activities', it will contain full set of items
         //myactivities database
@@ -148,6 +149,28 @@ public class BlogController {
             }
         });
 
+
+        get(new FreemarkerBasedRoute("/post", "entry_template.ftl") {
+            @Override
+            protected void doHandle(Request request, Response response, Writer writer)
+                    throws IOException, TemplateException {
+
+                SimpleHash root = new SimpleHash();
+
+                // initialize values for the form.
+                root.put("username", "");
+                root.put("password", "");
+                root.put("email", "");
+                root.put("password_error", "");
+                root.put("username_error", "");
+                root.put("email_error", "");
+                root.put("verify_error", "");
+
+                template.process(root, writer);
+            }
+        });
+
+
         // used to display actual blog post detail page
         get(new FreemarkerBasedRoute("/post/:permalink", "entry_template.ftl") {
             @Override
@@ -176,6 +199,8 @@ public class BlogController {
                 }
             }
         });
+
+
 
         // handle the signup post
         post(new FreemarkerBasedRoute("/signup", "signup.ftl") {
@@ -256,71 +281,7 @@ public class BlogController {
             }
         });
 
-        get(new FreemarkerBasedRoute("/reports", "report_template.ftl") {
-            @Override
-            protected void doHandle(Request request, Response response, Writer writer) throws IOException, TemplateException {
 
-                String cookie = getSessionCookie(request);
-                String username = sessionDAO.findUserNameBySessionId(cookie);
-
-
-                SimpleHash root = new SimpleHash();
-
-                if (username != null) {
-                    root.put("username", username);
-                }
-
-                if (username == null) {
-                    System.out.println("welcome() can't identify the user, redirecting to signup");
-                    response.redirect("/signup");
-
-                }
-                else {
-                    List<Document> reports = reportDAO.findByDateDescending(30);
-
-                    root.put("reports", reports);
-
-                    root.put("username", username);
-
-                    template.process(root, writer);
-                }
-            }
-        });
-
-
-
-        get(new FreemarkerBasedRoute("/expensies/:report_id", "expense_template.ftl") {
-            @Override
-            protected void doHandle(Request request, Response response, Writer writer) throws IOException, TemplateException {
-                int report_id = new Integer(request.params(":report_id"));
-                System.out.println("report_id="+report_id);
-
-                String cookie = getSessionCookie(request);
-                String username = sessionDAO.findUserNameBySessionId(cookie);
-
-
-                SimpleHash root = new SimpleHash();
-
-                if (username != null) {
-                    root.put("username", username);
-                }
-
-                if (username == null) {
-                    System.out.println("welcome() can't identify the user, redirecting to signup");
-                    response.redirect("/signup");
-
-                }
-                else {
-                    List<Document> expenses = expenceDAO.findByDateDescending(report_id,20);
-
-                    root.put("expenses", expenses);
-
-                    root.put("username", username);
-
-                    template.process(root, writer);
-                }
-            }
-        });
 
 
         // will present the form used to process new blog posts
@@ -342,6 +303,8 @@ public class BlogController {
                 }
             }
         });
+
+
 
         // handle the new post submission
         post(new FreemarkerBasedRoute("/newpost", "newpost_template.ftl") {
@@ -383,12 +346,72 @@ public class BlogController {
             }
         });
 
-        get(new FreemarkerBasedRoute("/welcome", "welcome.ftl") {
+
+
+// present signup form for blog
+        get(new FreemarkerBasedRoute("/expenses", "expense_template.ftl") {
+
+            @Override
+            public void doHandle(Request request, Response response, Writer writer) throws IOException, TemplateException {
+                String username = sessionDAO.findUserNameBySessionId(getSessionCookie(request));
+
+                List<Document> expenses = expenseDAO.findByDateDescending(10);
+                SimpleHash root = new SimpleHash();
+
+                root.put("myexpenses", expenses);
+                if (username != null) {
+                    root.put("username", username);
+                }
+
+                template.process(root, writer);
+            }
+        });
+
+        // used to display actual blog post detail page
+        get(new FreemarkerBasedRoute("/expenses/:permalink", "entry_expense_template.ftl") {
             @Override
             protected void doHandle(Request request, Response response, Writer writer) throws IOException, TemplateException {
+                String permalink = request.params(":permalink");
+
+                System.out.println("/expenses: get " + permalink);
+
+                Document expenses = expenseDAO.findByPermalink(permalink);
+                if (expenses == null) {
+                    response.redirect("/expenses_not_found");
+                }
+                else {
+                    // empty comment to hold new comment in form at bottom of blog entry detail page
+                    SimpleHash newComment = new SimpleHash();
+                    newComment.put("name", "");
+                    newComment.put("email", "");
+                    newComment.put("body", "");
+
+                    SimpleHash root = new SimpleHash();
+
+                    root.put("post", expenses);
+                    root.put("comments", newComment);
+
+                    template.process(root, writer);
+                }
+            }
+        });
+
+      /*  get(new FreemarkerBasedRoute("/expenses/:permalink", "expense_template.ftl") {
+            @Override
+            //report_id
+            protected void doHandle(Request request, Response response, Writer writer) throws IOException, TemplateException {
+                int report_id = new Integer(request.params(":permalink"));
+                System.out.println("report_id="+report_id);
 
                 String cookie = getSessionCookie(request);
                 String username = sessionDAO.findUserNameBySessionId(cookie);
+
+
+                SimpleHash root = new SimpleHash();
+
+                if (username != null) {
+                    root.put("username", username);
+                }
 
                 if (username == null) {
                     System.out.println("welcome() can't identify the user, redirecting to signup");
@@ -396,7 +419,138 @@ public class BlogController {
 
                 }
                 else {
+                    List<Document> expenses = expenseDAO.findByDateDescending(20);
+
+                    root.put("expenses", expenses);
+
+                    root.put("username", username);
+
+                    template.process(root, writer);
+                }
+            }
+        }); */
+
+
+        /*    @Override
+            protected void doHandle(Request request, Response response, Writer writer)
+                    throws IOException, TemplateException {
+
+                SimpleHash root = new SimpleHash();
+
+                // initialize values for the form.
+                root.put("username", "");
+                root.put("password", "");
+               // root.put("email", "");
+                root.put("password_error", "");
+                root.put("username_error", "");
+               // root.put("email_error", "");
+                root.put("verify_error", "");
+
+                template.process(root, writer);
+            }
+        }); */
+
+
+        // tells the user that the URL is dead
+        get(new FreemarkerBasedRoute("/expenses_not_found", "expenses_not_found.ftl") {
+            @Override
+            protected void doHandle(Request request, Response response, Writer writer) throws IOException, TemplateException {
+                SimpleHash root = new SimpleHash();
+                template.process(root, writer);
+            }
+        });
+
+
+        // will present the form used to process new blog posts
+        get(new FreemarkerBasedRoute("/newexpense", "newexpense_template.ftl") {
+            @Override
+            protected void doHandle(Request request, Response response, Writer writer) throws IOException, TemplateException {
+
+                // get cookie
+                String username = sessionDAO.findUserNameBySessionId(getSessionCookie(request));
+
+                if (username == null) {
+                    // looks like a bad request. user is not logged in
+                    response.redirect("/login");
+                } else {
                     SimpleHash root = new SimpleHash();
+                    root.put("username", username);
+
+                    template.process(root, writer);
+                }
+            }
+        });
+
+
+
+        // handle the new post submission
+        post(new FreemarkerBasedRoute("/newexpense", "newexpense_template.ftl") {
+            @Override
+            protected void doHandle(Request request, Response response, Writer writer)
+                    throws IOException, TemplateException {
+
+                String title = StringEscapeUtils.escapeHtml4(request.queryParams("subject"));
+                String post = StringEscapeUtils.escapeHtml4(request.queryParams("body"));
+                String tags = StringEscapeUtils.escapeHtml4(request.queryParams("tags"));
+
+                String username = sessionDAO.findUserNameBySessionId(getSessionCookie(request));
+
+                if (username == null) {
+                    response.redirect("/login");    // only logged in users can post to blog
+                }
+                else if (title.equals("") || post.equals("")) {
+                    // redisplay page with errors
+                    HashMap<String, String> root = new HashMap<String, String>();
+                    root.put("errors", "post must contain a title and blog entry.");
+                    root.put("subject", title);
+                    root.put("username", username);
+                    root.put("tags", tags);
+                    root.put("body", post);
+                    template.process(root, writer);
+                }
+                else {
+                    // extract tags
+                    ArrayList<String> tagsArray = extractTags(tags);
+
+                    // substitute some <p> for the paragraph breaks
+                    post = post.replaceAll("\\r?\\n", "<p>");
+
+                    String permalink = expenseDAO.addExpense(title, post, tagsArray, username);
+
+                    // now redirect to the blog permalink
+                    response.redirect("/expenses/" + permalink);
+                }
+            }
+        });
+
+
+
+
+
+
+        get(new FreemarkerBasedRoute("/reports", "report_template.ftl") {
+            @Override
+            protected void doHandle(Request request, Response response, Writer writer) throws IOException, TemplateException {
+
+                String cookie = getSessionCookie(request);
+                String username = sessionDAO.findUserNameBySessionId(cookie);
+
+
+                SimpleHash root = new SimpleHash();
+
+                if (username != null) {
+                    root.put("username", username);
+                }
+
+                if (username == null) {
+                    System.out.println("welcome() can't identify the user, redirecting to signup");
+                    response.redirect("/signup");
+
+                }
+                else {
+                    List<Document> reports = reportDAO.findByDateDescending(30);
+
+                    root.put("reports", reports);
 
                     root.put("username", username);
 
@@ -404,6 +558,8 @@ public class BlogController {
                 }
             }
         });
+
+
 
         // process a new comment
         post(new FreemarkerBasedRoute("/newcomment", "entry_template.ftl") {
@@ -436,7 +592,7 @@ public class BlogController {
 
                     template.process(root, writer);
                 } else {
-                    blogPostDAO.addPostComment(name, email, body, permalink,username);
+                    blogPostDAO.addPostComment(name, email, body, permalink);
                     response.redirect("/post/" + permalink);
                 }
             }
@@ -502,6 +658,56 @@ public class BlogController {
             protected void doHandle(Request request, Response response, Writer writer) throws IOException, TemplateException {
                 SimpleHash root = new SimpleHash();
                 template.process(root, writer);
+            }
+        });
+
+        // Show the posts filed under a certain tag
+        get(new FreemarkerBasedRoute("/tag/:thetag", "blog_template.ftl") {
+            @Override
+            protected void doHandle(Request request, Response response, Writer writer)
+                    throws IOException, TemplateException {
+
+                String username = sessionDAO.findUserNameBySessionId(getSessionCookie(request));
+                SimpleHash root = new SimpleHash();
+
+                String tag = StringEscapeUtils.escapeHtml4(request.params(":thetag"));
+                List<Document> posts = blogPostDAO.findByTagDateDescending(tag);
+
+                root.put("myposts", posts);
+                if (username != null) {
+                    root.put("username", username);
+                }
+
+                template.process(root, writer);
+            }
+        });
+
+// will allow a user to click Like on a post
+        post(new FreemarkerBasedRoute("/like", "entry_template.ftl") {
+            @Override
+            protected void doHandle(Request request, Response response, Writer writer) throws IOException, TemplateException {
+
+                String permalink = request.queryParams("permalink");
+                String commentOrdinalStr = request.queryParams("comment_ordinal");
+
+
+                // look up the post in question
+
+                int ordinal = Integer.parseInt(commentOrdinalStr);
+
+                // TODO: check return or have checkSession throw
+                String username = sessionDAO.findUserNameBySessionId(getSessionCookie(request));
+                Document post = blogPostDAO.findByPermalink(permalink);
+
+                //  if post not found, redirect to post not found error
+                if (post == null) {
+                    response.redirect("/post_not_found");
+                }
+                else {
+                    blogPostDAO.likePost(permalink, ordinal);
+
+                    response.redirect("/post/" + permalink);
+                }
             }
         });
 

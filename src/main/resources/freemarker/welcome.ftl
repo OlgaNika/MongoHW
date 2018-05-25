@@ -10,7 +10,7 @@
 
   </head>
 
-  <body>
+  <body  bgcolor = #FFCC99 >
     Welcome ${username}
 <p>
 <ul>
@@ -20,6 +20,16 @@
 </li>
 <li>
 <a href="/newpost">Create a New Post</a>
+</li>
+<li>
+<a href="/newexpense">Create a New Expence </a>
+</li>
+<li>
+<a href="/expenses">All  Expence </a>
+</li>
+
+<li>
+<a href="/reports">Get Report  </a>
 </li>
 
 
