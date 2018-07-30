@@ -1,4 +1,4 @@
-package hello;
+package model;
 
 
 import org.springframework.data.annotation.Id;
