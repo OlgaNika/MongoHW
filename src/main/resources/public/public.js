@@ -1,7 +1,8 @@
 angular.module('demo', [])
-.controller('Hello', function($scope, $http) {
-    $http.get('/greeting').
+.controller('Report', function($scope, $http) {
+    $http.get('/report').
         then(function(response) {
-            $scope.greeting = response.data;
+            $scope.reports = response.data;
         });
 });
+

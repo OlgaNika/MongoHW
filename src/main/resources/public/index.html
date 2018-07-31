@@ -1,15 +1,18 @@
 <!doctype html>
 <html ng-app="demo">
 <head>
-    <title>Hello AngularJS</title>
+    <title>Expencies app</title>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.3/angular.min.js"></script>
     <script src="public.js"></script>
 </head>
 
 <body>
-<div ng-controller="Hello">
-    <p>The ID is {{greeting.id}}</p>
-    <p>The content is {{greeting.content}}</p>
+<div ng-controller="Report">
+    <div ng-repeat='report in reports'>
+        <p>The ID is {{report.id}}</p>
+        <p>The name is {{report.name}}</p>
+    </div>
+
 </div>
 </body>
 </html>
