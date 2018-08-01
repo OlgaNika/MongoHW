@@ -26,11 +26,48 @@ public class RestappController {
         return expence.getId();
     }
 
+    //get all expenceies
     @RequestMapping(method = RequestMethod.GET, value = "/expence")
-    public List<Expence> listExpenceByReport(@RequestParam(value="reportId") String reportId) {
-        System.out.println("ReportId="+reportId);
-        return expenceRepository.findByReportId(reportId);
+    public List<Expence> listAllExpence() {
+        System.out.println("listAllExpence");
+        return expenceRepository.findAll();
     }
+
+    //get all expenceies for the Report by ReportId
+    @RequestMapping(method = RequestMethod.GET, value = "/expence/byReportId/{id}")
+    public List<Expence> listExpenceByReport(@PathVariable String id) {
+        System.out.println("ReportId="+id);
+        return expenceRepository.findByReportId(id);
+    }
+
+
+    @RequestMapping(method = RequestMethod.PUT, value = "/expence/{id}")
+    public String updateExpence(@PathVariable String id, @RequestBody Expence expenceFromClient) {
+        System.out.println("Update expence/{id} expenceId="+id);
+        Expence expenceFromDb = expenceRepository.findByid(id);
+        if(expenceFromClient.getAmount()!=null) {
+            expenceFromDb.setAmount(expenceFromClient.getAmount());
+        }
+        if(expenceFromClient.getCategory()!=null) {
+            expenceFromDb.setCategory(expenceFromClient.getCategory());
+        }
+        if(expenceFromClient.getDate()!=null) {
+            expenceFromDb.setDate(expenceFromClient.getDate());
+        }
+        if(expenceFromClient.getCreated()!=null) {
+            expenceFromDb.setCreated(expenceFromClient.getCreated());
+        }
+        if(expenceFromClient.getModified()!=null) {
+            expenceFromDb.setModified(expenceFromClient.getModified());
+        }
+        if(expenceFromClient.getReportId()!=null) {
+            expenceFromDb.setReportId(expenceFromClient.getReportId());
+        }
+            expenceRepository.save(expenceFromDb);
+            return expenceFromDb.toString();
+    }
+
+
 
     @RequestMapping(method = RequestMethod.GET, value = "/expence/{id}")
     public Expence expencebyId(@PathVariable String id) {
@@ -54,6 +91,22 @@ public class RestappController {
         return report.getId();
     }
 
+    @RequestMapping(method = RequestMethod.PUT, value = "/report/{id}")
+    public String updateReport(@PathVariable String id, @RequestBody Report reportFromClient) {
+        System.out.println("Update report/{id} reportId="+id);
+        Report reportFromDb = reportRepository.findByid(id);
+        if(reportFromClient.getName()==null) {
+            System.out.println("Report name is empty");
+            return "Nothing to Update";
+        } else {
+            reportFromDb.setName(reportFromClient.getName());
+            reportRepository.save(reportFromDb);
+            System.out.println("report/{id} reportId="+id+" is updated with name "+reportFromClient.getName());
+            return reportFromDb.toString();
+        }
+
+    }
+
     @RequestMapping(method=RequestMethod.GET,value="/report")
     public List<Report> getAllReports() {
         System.out.println("getAllReports");
@@ -72,6 +125,8 @@ public class RestappController {
         reportRepository.delete(report);
         return "Report with id="+id+" deleted";
     }
+
+
 
 //TODO support update for expence and reports
 

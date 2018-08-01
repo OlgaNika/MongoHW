@@ -14,6 +14,13 @@ public class Expence {
     private String modified;
     private String reportId;
 
+    @Override
+    public String toString() {
+        return String.format(
+                "Expence[id=%s, amount='%s', category='%s', date='%s', created='%s', modified='%s', reportId='%s']",
+                id, amount, category, date, created, modified, reportId);
+    }
+
     public Expence(){
 
     }
@@ -78,4 +85,6 @@ public class Expence {
     public void setReportId(String reportId) {
         this.reportId = reportId;
     }
+
+
 }

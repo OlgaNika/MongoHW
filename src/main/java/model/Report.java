@@ -32,4 +32,11 @@ public class Report {
     public void setCreated(String created) {
         this.created = created;
     }
+
+    @Override
+    public String toString() {
+        return String.format(
+                "Report[id=%s, name='%s', created='%s']",
+                id, name, created);
+    }
 }
