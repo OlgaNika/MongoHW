@@ -6,6 +6,8 @@ import model.Report;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -22,6 +24,10 @@ public class RestappController {
     @RequestMapping(method=RequestMethod.POST,value="/expence")
     public String postexpence(@RequestBody Expence expence) {
         System.out.println("postExpence="+expence);
+        if(expence.getDate()==null) {
+            expence.setDate(LocalDateTime.now());
+        }
+        expence.setCreated(LocalDateTime.now());
         expenceRepository.save(expence);
         return expence.getId();
     }
@@ -33,14 +39,16 @@ public class RestappController {
         return expenceRepository.findAll();
     }
 
+    //TODO get all expenceies for partucular month
+
     //get all expenceies for the Report by ReportId
-    @RequestMapping(method = RequestMethod.GET, value = "/expence/byReportId/{id}")
+    @RequestMapping(method = RequestMethod.GET, value = "/expence/byReportid/{id}")
     public List<Expence> listExpenceByReport(@PathVariable String id) {
-        System.out.println("ReportId="+id);
-        return expenceRepository.findByReportId(id);
+        System.out.println("Reportid="+id);
+        return expenceRepository.findByReportid(id);
     }
 
-
+//modify expence's data
     @RequestMapping(method = RequestMethod.PUT, value = "/expence/{id}")
     public String updateExpence(@PathVariable String id, @RequestBody Expence expenceFromClient) {
         System.out.println("Update expence/{id} expenceId="+id);
@@ -48,8 +56,8 @@ public class RestappController {
         if(expenceFromClient.getAmount()!=null) {
             expenceFromDb.setAmount(expenceFromClient.getAmount());
         }
-        if(expenceFromClient.getCategory()!=null) {
-            expenceFromDb.setCategory(expenceFromClient.getCategory());
+        if(expenceFromClient.getType()!=null) {
+            expenceFromDb.setType(expenceFromClient.getType());
         }
         if(expenceFromClient.getDate()!=null) {
             expenceFromDb.setDate(expenceFromClient.getDate());
@@ -57,11 +65,11 @@ public class RestappController {
         if(expenceFromClient.getCreated()!=null) {
             expenceFromDb.setCreated(expenceFromClient.getCreated());
         }
-        if(expenceFromClient.getModified()!=null) {
-            expenceFromDb.setModified(expenceFromClient.getModified());
-        }
-        if(expenceFromClient.getReportId()!=null) {
-            expenceFromDb.setReportId(expenceFromClient.getReportId());
+
+        expenceFromDb.setModified(LocalDateTime.now());
+
+        if(expenceFromClient.getReportid()!=null) {
+            expenceFromDb.setReportid(expenceFromClient.getReportid());
         }
             expenceRepository.save(expenceFromDb);
             return expenceFromDb.toString();
@@ -125,9 +133,5 @@ public class RestappController {
         reportRepository.delete(report);
         return "Report with id="+id+" deleted";
     }
-
-
-
-//TODO support update for expence and reports
 
 }

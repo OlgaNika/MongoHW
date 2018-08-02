@@ -1,89 +1,90 @@
 package model;
 
 import org.springframework.data.annotation.Id;
+import java.time.LocalDateTime;
 
 public class Expence {
 
     @Id
     private String id;
 
-    private String amount;
-    private String category;
-    private String date;
-    private String created;
-    private String modified;
-    private String reportId;
+    private Double amount;
+    private String type;
+    private LocalDateTime date;
+    private LocalDateTime created;
+    private LocalDateTime modified;
+    private String reportid;
 
     @Override
     public String toString() {
         return String.format(
                 "Expence[id=%s, amount='%s', category='%s', date='%s', created='%s', modified='%s', reportId='%s']",
-                id, amount, category, date, created, modified, reportId);
+                id, amount, type, date, created, modified, reportid);
     }
 
     public Expence(){
 
     }
 
-    public Expence(String amount, String category, String date, String created, String modified, String reportId) {
+    public Expence(Double amount, String type, LocalDateTime date, LocalDateTime created, LocalDateTime modified, String report_id) {
         this.amount = amount;
-        this.category = category;
+        this.type = type;
         this.date = date;
         this.created = created;
         this.modified = modified;
-        this.reportId = reportId;
+        this.reportid = report_id;
     }
 
     public String getId() {
         return id;
     }
 
-    public String getAmount() {
+    public Double getAmount() {
         return amount;
     }
 
-    public void setAmount(String amount) {
+    public void setAmount(Double amount) {
         this.amount = amount;
     }
 
-    public String getDate() {
+    public LocalDateTime getDate() {
         return date;
     }
 
-    public void setDate(String date) {
+    public void setDate(LocalDateTime date) {
         this.date = date;
     }
 
-    public String getCategory() {
-        return category;
+    public String getType() {
+        return type;
     }
 
-    public void setCategory(String category) {
-        this.category = category;
+    public void setType(String category) {
+        this.type = category;
     }
 
-    public String getCreated() {
+    public LocalDateTime getCreated() {
         return created;
     }
 
-    public void setCreated(String created) {
+    public void setCreated(LocalDateTime created) {
         this.created = created;
     }
 
-    public String getModified() {
+    public LocalDateTime getModified() {
         return modified;
     }
 
-    public String getReportId() {
-        return reportId;
+    public String getReportid() {
+        return reportid;
     }
 
-    public void setModified(String modified) {
+    public void setModified(LocalDateTime modified) {
         this.modified = modified;
     }
 
-    public void setReportId(String reportId) {
-        this.reportId = reportId;
+    public void setReportid(String reportid) {
+        this.reportid = reportid;
     }
 
 
