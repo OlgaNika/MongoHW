@@ -39,7 +39,10 @@ public class RestappController {
         return expenceRepository.findAll();
     }
 
-    //TODO get all expenceies for partucular month
+    //TODO get all expenceies for partucular mounth
+    //TODO get all expenceies by Type for mounth
+    //TODO get total for mounth
+    //TODO get total by Type for mounth
 
     //get all expenceies for the Report by ReportId
     @RequestMapping(method = RequestMethod.GET, value = "/expence/byReportid/{id}")

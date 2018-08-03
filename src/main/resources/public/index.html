@@ -1,5 +1,5 @@
 <!doctype html>
-<html ng-app="demo">
+<html ng-app="App">
 <head>
     <title>Expencies app</title>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.3/angular.min.js"></script>
@@ -7,12 +7,26 @@
 </head>
 
 <body>
-<div ng-controller="Report">
-    <div ng-repeat='report in reports'>
-        <p>The ID is {{report.id}}</p>
-        <p>The name is {{report.name}}</p>
-    </div>
+<h1>All Reports</h1>
+<table ng-controller="Report" border="1">
+    <tr><td>uuid</td><td>name</td></tr>
+        <tr ng-repeat="report in reports">
+            <td>{{report.id}}</td>
+            <td>{{report.name}}</td>
+        </tr>
+</table>
 
-</div>
+<h1>All Expences</h1>
+<table ng-controller="Expence" border="1">
+    <tr><td>uuid</td><td>amount</td><td>date</td><td>type</td></tr>
+    <tr ng-repeat="expence in expences">
+        <td>{{expence.id}}</td>
+        <td>{{expence.amount}}</td>
+        <td>{{expence.date}}</td>
+        <td>{{expence.type}}</td>
+    </tr>
+
+</table>
+
 </body>
 </html>
