@@ -1,1 +1,56 @@
-Hello index
+<!doctype html>
+<html ng-app="App">
+<head>
+    <title>Expencies Application</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.2/angular.min.js"></script>
+    <script src="js/public.js"></script>
+</head>
+
+<body>
+
+
+<form ng-submit="submit()" ng-controller="Report">
+    Enter text and hit enter:
+    <input type="text" ng-model="report.name" name="name" />
+    <input type="date" ng-model="report.created" name="created" />
+    <input type="submit" id="submit" value="Submit" />
+    <h1>All Reports</h1>
+    <table border="1">
+        <tr><td>uuid</td><td>name</td><td>created</td></tr>
+        <tr ng-repeat="report in reports">
+            <td>{{report.id}}</td>
+            <td>{{report.name}}</td>
+            <td>{{report.created}}</td>
+        </tr>
+    </table>
+
+</form>
+
+
+
+
+
+<form ng-submit="submit()" ng-controller="Expence">
+    Enter text and hit enter:
+    <input type="number" ng-model="expence.amount" name="amount" />
+    <input type="text" ng-model="expence.type" name="type" />
+    <input type="date" ng-model="expence.date" name="date" />
+    <input type="submit" id="submit" value="Submit" />
+    <h1>All Expences</h1>
+    <table border="1">
+        <tr><td>uuid</td><td>amount</td><td>date</td><td>type</td></tr>
+        <tr ng-repeat="expence in expences">
+            <td>{{expence.id}}</td>
+            <td>{{expence.amount}}</td>
+            <td>{{expence.date}}</td>
+            <td>{{expence.type}}</td>
+        </tr>
+
+    </table>
+</form>
+
+
+
+
+</body>
+</html>

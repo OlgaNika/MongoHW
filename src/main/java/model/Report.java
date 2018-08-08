@@ -2,16 +2,18 @@ package model;
 
 import org.springframework.data.annotation.Id;
 
+import java.time.LocalDateTime;
+
 public class Report {
 
     @Id
     private String id;
     private String name;
-    private String created;
+    private LocalDateTime created;
 
     public Report(){}
 
-    public Report( String name, String created ){
+    public Report( String name, LocalDateTime created ){
         this.name=name;
         this.created=created;
 
@@ -24,19 +26,19 @@ public class Report {
     public String getName() {
         return name;
     }
-    public String getCreated(){return created;}
+    public LocalDateTime getCreated(){return created;}
 
     public void setName(String name) {
         this.name = name;
     }
-    public void setCreated(String created) {
+    public void setCreated(LocalDateTime created) {
         this.created = created;
     }
 
     @Override
     public String toString() {
         return String.format(
-                "Report[id=%s, name='%s', created='%s']",
+                "{id=%s, name='%s', created='%s'}",
                 id, name, created);
     }
 }
