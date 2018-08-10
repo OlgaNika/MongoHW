@@ -6,9 +6,7 @@ import model.Report;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -41,8 +39,23 @@ public class RestappController {
         return expenceRepository.findAll();
     }
 
-    //TODO get all expenceies for partucular mounth
-    //TODO get all expenceies by Type for mounth
+    //TODO get all expenceies for partucular month
+    @CrossOrigin(origins = "http://127.0.0.1:8001")
+    @RequestMapping(method = RequestMethod.GET, value = "/expenceForThisMonth")
+    public List<Expence> expenceForThisMonth() {
+        System.out.println("expenceForThisMonth");
+        LocalDateTime date = LocalDateTime.parse("2018-08-01");
+        return expenceRepository.findAll();
+    }
+    //TODO get all expenceies by Type for month
+
+    // get all expenceies for partucular type
+    @CrossOrigin(origins = "http://127.0.0.1:8001")
+    @RequestMapping(method = RequestMethod.GET, value = "/expenceByType/{type}")
+    public List<Expence> expenceByType(@PathVariable String type) {
+        System.out.println("expenceByType");
+        return expenceRepository.findByType(type);
+    }
     //TODO get total for mounth
     //TODO get total by Type for mounth
 
@@ -95,7 +108,8 @@ public class RestappController {
     public String deleteExpence(@PathVariable String id){
         Expence expence = expenceRepository.findByid(id);
         expenceRepository.delete(expence);
-        return "Expence with id="+id+" deleted";
+        System.out.println("Expence with id="+id+" deleted");
+        return null;
     }
 
 //Routes for reports
@@ -144,7 +158,8 @@ public class RestappController {
     public String deleteReport(@PathVariable String id){
         Report report = reportRepository.findByid(id);
         reportRepository.delete(report);
-        return "Report with id="+id+" deleted";
+        System.out.println("Report "+id+" is deleted");
+        return null;
     }
 
 }

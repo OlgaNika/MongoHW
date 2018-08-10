@@ -4,50 +4,79 @@
     <title>Expencies Application</title>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.2/angular.min.js"></script>
     <script src="js/public.js"></script>
+    <meta charset="utf-8">
 </head>
 
-<body>
+<body ng-controller="Expence">
 
 
-<form ng-submit="submit()" ng-controller="Report">
-    Enter text and hit enter:
+<form ng-submit="submit()">
+    Enter and hit add:<br/>
+    <input type="number" ng-model="expence.amount" name="amount" /><br/>
+    <select ng-model="expence.type" name="type" >
+        <option value="Lunch-Food">Lunch-Food</option>
+        <option value="Grocery">Grocery</option>
+        <option value="Hobby">Hobby</option>
+        <option value="Overall">Overall</option>
+        <option value="Car.fuel">Car.fuel</option>
+        <option value="Car">Car</option>
+        <option value="Overall.payments">Overall.payments</option>
+        <option value="Overall.payments">Kids.payments</option>
+        <option value="Transport">Transport</option>
+        <option value="Entertainment">Entertainment</option>
+        <option value="Pharmacy">Pharmacy</option>
+        <option value="Travel">Travel</option>
+        <option value="Pharmacy">Pharmacy</option>
+        <option value="Kids">Kids</option>
+        <option value="Restorant">Restorant</option>
+        <option value="Clothes">Clothes</option>
+        <option value="Gifts">Gifts</option>
+        <option value="CountrySeat">CountrySeat</option>
+    </select> <br/>
+    <input type="date" ng-model="expence.date" name="date" /><br/>
+    <input type="memo" ng-model="expence.notes" name="notes" /><br/>
+    <input type="submit" id="submit" value="Add" />   <br/>
+</form>
+<h1>Expences</h1>
+<button ng-click="showForThisMonth()" style="color:blueviolet">В этом месяце</button></td>
+<table border="1">
+    <td>index</td><td>Сумма</td><td>Дата</td><td>Тип</td><td>Примечание</td><td>Удалить</td></tr>
+    <tr ng-repeat="expence in expences">
+        <td>{{expence.index}}</td>
+        <td>{{expence.amount}}</td>
+        <td>{{expence.date}}</td>
+        <td ng-click="showByType($index)">{{expence.type}}</td>
+        <td>{{expence.notes}}</td>
+        <td><button ng-click="removeItem($index)" style="color:blueviolet">Remove it!</button></td>
+    </tr>
+
+</table>
+
+
+<!--
+    <form ng-submit="submit()" >
+      Enter New Report Details and hit create:
     <input type="text" ng-model="report.name" name="name" />
     <input type="date" ng-model="report.created" name="created" />
-    <input type="submit" id="submit" value="Submit" />
+    <input type="submit" id="submit" value="Create" />
+</form>
+
     <h1>All Reports</h1>
-    <table border="1">
-        <tr><td>uuid</td><td>name</td><td>created</td></tr>
+<table border="1">
+    <tr><td>uuid</td><td>name</td><td>created</td></tr>
         <tr ng-repeat="report in reports">
-            <td>{{report.id}}</td>
+            <td>
+            <button ng-click="removeItem($index)" style="color:blueviolet">Delete it!</button>
+              </td>
             <td>{{report.name}}</td>
             <td>{{report.created}}</td>
         </tr>
-    </table>
+</table>
 
-</form>
-
-
+-->
 
 
 
-<form ng-submit="submit()" ng-controller="Expence">
-    Enter text and hit enter:
-    <input type="number" ng-model="expence.amount" name="amount" />
-    <input type="text" ng-model="expence.type" name="type" />
-    <input type="date" ng-model="expence.date" name="date" />
-    <input type="submit" id="submit" value="Submit" />
-    <h1>All Expences</h1>
-    <table border="1">
-        <tr><td>uuid</td><td>amount</td><td>date</td><td>type</td></tr>
-        <tr ng-repeat="expence in expences">
-            <td>{{expence.id}}</td>
-            <td>{{expence.amount}}</td>
-            <td>{{expence.date}}</td>
-            <td>{{expence.type}}</td>
-        </tr>
-
-    </table>
-</form>
 
 
 
