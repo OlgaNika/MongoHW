@@ -4,12 +4,17 @@ package restapp;
 import model.Expence;
 import model.Report;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.config.annotation.authentication.configuration.EnableGlobalAuthentication;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.security.PermitAll;
 import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
+@PermitAll
 public class RestappController {
 
     @Autowired
@@ -19,7 +24,7 @@ public class RestappController {
     private ExpenceRepository expenceRepository;
 
 // rooutes for Expences
-    @CrossOrigin(origins = "http://127.0.0.1:8001")
+    @CrossOrigin(origins = "*")
     @RequestMapping(method=RequestMethod.POST,value="/expence")
     public Expence postexpence(@RequestBody Expence expence) {
         System.out.println("postExpence="+expence);
@@ -32,7 +37,8 @@ public class RestappController {
     }
 
     //get all expenceies
-    @CrossOrigin(origins = "http://127.0.0.1:8001")
+
+    @CrossOrigin(origins = "*")
     @RequestMapping(method = RequestMethod.GET, value = "/expence")
     public List<Expence> listAllExpence() {
         System.out.println("listAllExpence");
@@ -40,7 +46,7 @@ public class RestappController {
     }
 
     //TODO get all expenceies for partucular month
-    @CrossOrigin(origins = "http://127.0.0.1:8001")
+    @CrossOrigin(origins = "*")
     @RequestMapping(method = RequestMethod.GET, value = "/expenceForThisMonth")
     public List<Expence> expenceForThisMonth() {
         System.out.println("expenceForThisMonth");
@@ -50,7 +56,7 @@ public class RestappController {
     //TODO get all expenceies by Type for month
 
     // get all expenceies for partucular type
-    @CrossOrigin(origins = "http://127.0.0.1:8001")
+    @CrossOrigin(origins = "*")
     @RequestMapping(method = RequestMethod.GET, value = "/expenceByType/{type}")
     public List<Expence> expenceByType(@PathVariable String type) {
         System.out.println("expenceByType");
@@ -60,7 +66,7 @@ public class RestappController {
     //TODO get total by Type for mounth
 
     //get all expenceies for the Report by ReportId
-    @CrossOrigin(origins = "http://127.0.0.1:8001")
+    @CrossOrigin(origins = "*")
     @RequestMapping(method = RequestMethod.GET, value = "/expence/byReportid/{id}")
     public List<Expence> listExpenceByReport(@PathVariable String id) {
         System.out.println("Reportid="+id);
@@ -68,7 +74,7 @@ public class RestappController {
     }
 
 //modify expence's data
-    @CrossOrigin(origins = "http://127.0.0.1:8001")
+    @CrossOrigin(origins = "*")
     @RequestMapping(method = RequestMethod.PUT, value = "/expence/{id}")
     public String updateExpence(@PathVariable String id, @RequestBody Expence expenceFromClient) {
         System.out.println("Update expence/{id} expenceId="+id);
@@ -96,14 +102,14 @@ public class RestappController {
     }
 
 
-    @CrossOrigin(origins = "http://127.0.0.1:8001")
+    @CrossOrigin(origins = "*")
     @RequestMapping(method = RequestMethod.GET, value = "/expence/{id}")
     public Expence expencebyId(@PathVariable String id) {
         System.out.println("expence/{id} ExpenceId="+id);
         return expenceRepository.findByid(id);
     }
 
-    @CrossOrigin(origins = "http://127.0.0.1:8001")
+    @CrossOrigin(origins = "*")
     @RequestMapping(method = RequestMethod.DELETE, value = "/expence/{id}")
     public String deleteExpence(@PathVariable String id){
         Expence expence = expenceRepository.findByid(id);
@@ -113,7 +119,7 @@ public class RestappController {
     }
 
 //Routes for reports
-    @CrossOrigin(origins = "http://127.0.0.1:8001")
+    @CrossOrigin(origins = "*")
     @RequestMapping(method=RequestMethod.POST,value="/report")
     public Report postReport(@RequestBody Report report) {
         System.out.println("postReport="+report);
@@ -122,7 +128,7 @@ public class RestappController {
         return report;
     }
 
-    @CrossOrigin(origins = "http://127.0.0.1:8001")
+    @CrossOrigin(origins = "*")
     @RequestMapping(method = RequestMethod.PUT, value = "/report/{id}")
     public String updateReport(@PathVariable String id, @RequestBody Report reportFromClient) {
         System.out.println("Update report/{id} reportId="+id);
@@ -139,21 +145,21 @@ public class RestappController {
 
     }
 
-    @CrossOrigin(origins = "http://127.0.0.1:8001")
+    @CrossOrigin(origins = "*")
     @RequestMapping(method=RequestMethod.GET,value="/report")
     public List<Report> getAllReports() {
         System.out.println("getAllReports");
         return reportRepository.findAll();
     }
 
-    @CrossOrigin(origins = "http://127.0.0.1:8001")
+    @CrossOrigin(origins = "*")
     @RequestMapping(method = RequestMethod.GET, value = "/report/{id}")
     public Report reportbyId(@PathVariable String id) {
         System.out.println("report/{id} reportId="+id);
         return reportRepository.findByid(id);
     }
 
-    @CrossOrigin(origins = "http://127.0.0.1:8001")
+    @CrossOrigin(origins = "*")
     @RequestMapping(method = RequestMethod.DELETE, value = "/report/{id}")
     public String deleteReport(@PathVariable String id){
         Report report = reportRepository.findByid(id);

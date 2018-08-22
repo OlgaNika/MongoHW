@@ -43,6 +43,7 @@ myApp.controller('Expence', ['$scope','$http', function($scope,$http) {
     };
     $scope.submit = function() {
         if (typeof $scope.expence.amount !== "undefined") {
+            console.log('$scope.expence.date='+$scope.expence.date);
             $http.post('http://localhost:8080/expence',$scope.expence,{
             headers: {'Content-Type': 'application/json'}}).
             then(function(response) {
@@ -58,6 +59,17 @@ myApp.controller('Expence', ['$scope','$http', function($scope,$http) {
             });
         };
     };
+
+    $scope.getTotal = function(){
+        if (typeof $scope.expences !== "undefined") {
+        var total = 0;
+        for(var i = 0; i < $scope.expences.length; i++){
+            var expence = $scope.expences[i].amount;
+            total += expence;
+        }
+        return total;
+    }
+    }
 
 }]);
 
@@ -102,12 +114,3 @@ myApp.controller('Report', ['$scope','$http', function($scope,$http) {
                 });
         };
     }]);
-
-
-
-
-
-
-
-
-

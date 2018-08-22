@@ -38,19 +38,18 @@
     <input type="submit" id="submit" value="Add" />   <br/>
 </form>
 <h1>Expences</h1>
-<button ng-click="showForThisMonth()" style="color:blueviolet">В этом месяце</button></td>
+<button ng-click="showForThisMonth()" style="color:blueviolet">Показать все</button></td>
 <table border="1">
-    <td>index</td><td>Сумма</td><td>Дата</td><td>Тип</td><td>Примечание</td><td>Удалить</td></tr>
+    <td>Сумма</td><td>Дата</td><td>Тип(Кликни на него)</td><td>Примечание</td><td>Удалить</td></tr>
     <tr ng-repeat="expence in expences">
-        <td>{{expence.index}}</td>
         <td>{{expence.amount}}</td>
         <td>{{expence.date}}</td>
         <td ng-click="showByType($index)">{{expence.type}}</td>
         <td>{{expence.notes}}</td>
         <td><button ng-click="removeItem($index)" style="color:blueviolet">Remove it!</button></td>
     </tr>
-
 </table>
+<p>Сумма:<b>{{getTotal()}}</b></p>
 
 
 <!--
