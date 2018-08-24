@@ -1,11 +1,13 @@
-package service;
+package restapp;
 
 import model.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Service;
 
+@Service
 public class UserDetailsServiceImp implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -27,7 +29,7 @@ public class UserDetailsServiceImp implements UserDetailsService {
     }
 
     private User findUserbyUername(String username) {
-        if(username.equalsIgnoreCase("admin")) {
+        if(username.equalsIgnoreCase("userr")) {
             return new User(username, "a1", "ADMIN");
         }
         return null;
