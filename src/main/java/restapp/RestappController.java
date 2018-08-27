@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.PermitAll;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
 
 @RestController
@@ -30,7 +31,15 @@ public class RestappController {
         System.out.println("postExpence="+expence);
         if(expence.getDate()==null) {
             expence.setDate(LocalDateTime.now());
+        } else {
+            expence.setDate(expence.getDate().plusHours(4));
         }
+        System.out.println("date.getDate="+expence.getDate());
+        System.out.println("date.MIN="+expence.getDate().atOffset(ZoneOffset.MIN));
+        System.out.println("date.MAX="+expence.getDate().atOffset(ZoneOffset.MAX));
+        System.out.println("date.UTC="+expence.getDate().atOffset(ZoneOffset.UTC));
+        System.out.println("LocalDateTime.now()="+LocalDateTime.now());
+        System.out.println("expence.getDate().plusHours(4)="+expence.getDate().plusHours(4));
         expence.setCreated(LocalDateTime.now());
         expenceRepository.save(expence);
         return expence;
