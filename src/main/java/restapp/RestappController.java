@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.PermitAll;
 import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 import java.util.List;
 
 @RestController
@@ -22,7 +21,7 @@ public class RestappController {
     private ExpenceRepository expenceRepository;
 
 // rooutes for Expences
-    @CrossOrigin(origins = "*")
+    @CrossOrigin(origins = "http://localhost:8002")
     @RequestMapping(method=RequestMethod.POST,value="/expence")
     public Expence postexpence(@RequestBody Expence expence) {
         System.out.println("postExpence="+expence);
@@ -31,12 +30,6 @@ public class RestappController {
         } else {
             expence.setDate(expence.getDate().plusHours(4));
         }
-        System.out.println("date.getDate="+expence.getDate());
-        System.out.println("date.MIN="+expence.getDate().atOffset(ZoneOffset.MIN));
-        System.out.println("date.MAX="+expence.getDate().atOffset(ZoneOffset.MAX));
-        System.out.println("date.UTC="+expence.getDate().atOffset(ZoneOffset.UTC));
-        System.out.println("LocalDateTime.now()="+LocalDateTime.now());
-        System.out.println("expence.getDate().plusHours(4)="+expence.getDate().plusHours(4));
         expence.setCreated(LocalDateTime.now());
         expenceRepository.save(expence);
         return expence;
@@ -44,29 +37,28 @@ public class RestappController {
 
     //get all expenceies
 
-    @CrossOrigin(origins = "*")
+    @CrossOrigin(origins = "http://localhost:8002")
     @RequestMapping(method = RequestMethod.GET, value = "/expence")
     public List<Expence> listAllExpence() {
         System.out.println("listAllExpence");
         return expenceRepository.findAll();
     }
 
-    //TODO get all expenceies for partucular month
-    @CrossOrigin(origins = "*")
-    @RequestMapping(method = RequestMethod.GET, value = "/expenceForThisMonth")
-    public List<Expence> expenceForThisMonth() {
-        System.out.println("expenceForThisMonth");
-        LocalDateTime date = LocalDateTime.parse("2018-08-01");
-        return expenceRepository.findAll();
+    @CrossOrigin(origins = "http://localhost:8002")
+    @RequestMapping(method = RequestMethod.GET, value = "/expenceForThisMonth/{month}")
+    public List<Expence> expenceForParticularMonth(@PathVariable int month) {
+        if (month<1 || month>12) month = LocalDateTime.now().getMonthValue();
+        System.out.println("expenceForThisMonth for month="+month);
+        return expenceRepository.findforMonth(month);
     }
-    //TODO get all expenceies by Type for month
 
-    // get all expenceies for partucular type
+    // get all expenceies for partucular type for this month
     @CrossOrigin(origins = "*")
-    @RequestMapping(method = RequestMethod.GET, value = "/expenceByType/{type}")
-    public List<Expence> expenceByType(@PathVariable String type) {
-        System.out.println("expenceByType");
-        return expenceRepository.findByType(type);
+    @RequestMapping(method = RequestMethod.GET, value = "/expenceByType/{type}/{month}")
+    public List<Expence> expenceByTypeForMonth(@PathVariable String type,@PathVariable int month) {
+        if (month<1 || month>12) month = LocalDateTime.now().getMonthValue();
+        System.out.println("expenceByTypeForMonth for month="+month);
+        return expenceRepository.findByTypeForMonth(type,month);
     }
     //TODO get total for mounth
     //TODO get total by Type for mounth

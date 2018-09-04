@@ -7,10 +7,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class RestApplication  {
 
 
-    //TODO implement rest api expenceForThisMonth
-
-
-
     //TODO 1)fix issue with time zone = post new expence created with prev date - fixed with WA +4 hours added
     // the issue with TZ sync - needs to be fixed permanantly
 //TODO 2) add user's authorisation - create default user admin/3

@@ -1,17 +1,18 @@
 var myApp = angular.module('App',[]);
 
+var host='';
 
 myApp.controller('Expence', ['$scope','$http', function($scope,$http) {
     console.log('Expence started');
-    $http.get('/expence').
+    $http.get(host+'/expenceForThisMonth/0').
     then(function(response) {
         $scope.expences = response.data;
     });
 
 
     $scope.showForThisMonth = function() {
-        console.log('show for this month - but show all againn');
-        $http.get('/expence').
+        console.log('show for this month');
+        $http.get(host+'/expenceForThisMonth/0').
         then(function(response) {
         $scope.expences = response.data;
         console.log('expencies reloaded');
@@ -20,10 +21,10 @@ myApp.controller('Expence', ['$scope','$http', function($scope,$http) {
 
     $scope.showByType = function(index) {
         console.log('showByType for index='+index+';type='+$scope.expences[index].type);
-        $http.get('/expenceByType/'+$scope.expences[index].type).
+        $http.get(host+'/expenceByType/'+$scope.expences[index].type+'/0').
             then(function(response) {
                 $scope.expences = response.data;
-                console.log('expencies reloaded by type');
+                console.log('expencies reloaded by type for this month');
             }, function (response) {
                 console.log('error!');
                 console.log(response);
@@ -32,7 +33,7 @@ myApp.controller('Expence', ['$scope','$http', function($scope,$http) {
 
     $scope.removeItem = function(index) {
         console.log('delete index='+index+';id='+$scope.expences[index].id);
-        $http.delete('/expence/'+$scope.expences[index].id).
+        $http.delete(host+'/expence/'+$scope.expences[index].id).
             then(function(response) {
                 console.log(response);
                 $scope.expences.splice(index, 1);
@@ -44,7 +45,7 @@ myApp.controller('Expence', ['$scope','$http', function($scope,$http) {
     $scope.submit = function() {
         if (typeof $scope.expence.amount !== "undefined") {
             console.log('$scope.expence.date='+$scope.expence.date);
-            $http.post('/expence',$scope.expence,{
+            $http.post(host+'/expence',$scope.expence,{
             headers: {'Content-Type': 'application/json'}}).
             then(function(response) {
                 console.log('success');

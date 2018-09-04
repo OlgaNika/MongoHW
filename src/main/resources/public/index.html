@@ -11,7 +11,7 @@
 
 
 <form ng-submit="submit()">
-    Enter and hit add:<br/>
+    Запиши расходы - это просто:<br/>
     <input type="number" ng-model="expence.amount" name="amount" /><br/>
     <select ng-model="expence.type" name="type" >
         <option value="Lunch-Food">Lunch-Food</option>
@@ -37,8 +37,8 @@
     <input type="memo" ng-model="expence.notes" name="notes" /><br/>
     <input type="submit" id="submit" value="Add" />   <br/>
 </form>
-<h1>Expences</h1>
-<button ng-click="showForThisMonth()" style="color:blueviolet">Показать все</button></td>
+<h1>Что потратил в этом месяце</h1>
+<button ng-click="showForThisMonth()" style="color:blueviolet">Показать все опять</button></td>
 <table border="1">
     <td>Сумма</td><td>Дата</td><td>Тип(Кликни на него)</td><td>Примечание</td><td>Удалить</td></tr>
     <tr ng-repeat="expence in expences">
@@ -50,33 +50,7 @@
     </tr>
 </table>
 <p>Сумма:<b>{{getTotal()}}</b></p>
-
-
-<!--
-    <form ng-submit="submit()" >
-      Enter New Report Details and hit create:
-    <input type="text" ng-model="report.name" name="name" />
-    <input type="date" ng-model="report.created" name="created" />
-    <input type="submit" id="submit" value="Create" />
-</form>
-
-    <h1>All Reports</h1>
-<table border="1">
-    <tr><td>uuid</td><td>name</td><td>created</td></tr>
-        <tr ng-repeat="report in reports">
-            <td>
-            <button ng-click="removeItem($index)" style="color:blueviolet">Delete it!</button>
-              </td>
-            <td>{{report.name}}</td>
-            <td>{{report.created}}</td>
-        </tr>
-</table>
-
--->
-
-
-
-
+v1.2
 
 
 

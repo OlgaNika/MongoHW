@@ -4,7 +4,6 @@ import model.Expence;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 public interface ExpenceRepository extends MongoRepository<Expence,String> {
@@ -13,8 +12,12 @@ public interface ExpenceRepository extends MongoRepository<Expence,String> {
     public List<Expence> findByReportid(String reportid);
     public List<Expence> findAll();
     //Supports native JSON query string
-    //@Query("{date:{$gte:new Date('?0')}}")
     //{date:{$gte:new Date('2017-08-09')}}
-   // public List<Expence> findforMonth(String date);
+    //db.expence.find({ "$expr": { "$eq": [{ "$month": "$date" }, 8] } })
+    @Query("{ '$expr': { '$eq': [{ '$month': '$date' }, ?0 ] } }")
+    public List<Expence> findforMonth(int month);
     public List<Expence> findByType(String type);
+    @Query("{ 'type':'?0','$expr': { '$eq': [{ '$month': '$date' }, ?1 ] } }")
+    public List<Expence> findByTypeForMonth(String type,int month);
+
 }
