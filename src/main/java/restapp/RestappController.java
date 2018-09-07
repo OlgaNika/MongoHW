@@ -4,9 +4,15 @@ package restapp;
 import model.Expence;
 import model.Report;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.PermitAll;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -49,8 +55,39 @@ public class RestappController {
     public List<Expence> expenceForParticularMonth(@PathVariable int month) {
         if (month<1 || month>12) month = LocalDateTime.now().getMonthValue();
         System.out.println("expenceForThisMonth for month="+month);
+        UserDetails user =
+                (UserDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        System.out.println("UserDetails getUsername="+user.getUsername());
+        System.out.println("UserDetails getAuthorities="+user.getAuthorities());
         return expenceRepository.findforMonth(month);
     }
+
+
+    @RequestMapping(method = RequestMethod.GET, value="/logoutPage")
+    public String logoutPage (HttpServletRequest request, HttpServletResponse response) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+        System.out.println("logout procedure started");
+        if (auth != null){
+            System.out.println("logout procedure");
+            new SecurityContextLogoutHandler().logout(request, response, auth);
+        } else {
+            System.out.println("Authentication is null");
+
+        }
+        return "redirect:/";
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/userDetails")
+    public UserDetails getUserDeatils(){
+        UserDetails userDetails =
+                (UserDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        System.out.println("userDetails getUsername="+userDetails.getUsername());
+        System.out.println("userDetails getAuthorities="+userDetails.getAuthorities());
+        return userDetails;
+    }
+
+
 
     // get all expenceies for partucular type for this month
     @CrossOrigin(origins = "*")

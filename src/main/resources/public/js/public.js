@@ -4,6 +4,14 @@ var host='';
 
 myApp.controller('Expence', ['$scope','$http', function($scope,$http) {
     console.log('Expence started');
+    $http.get(host+'/userDetails').
+        then(function(response) {
+            $scope.userDetails = response.data;
+            console.log('userDetails loaded');
+            }, function (response) {
+                console.log('error!');
+                console.log(response);
+                });
     $http.get(host+'/expenceForThisMonth/0').
     then(function(response) {
         $scope.expences = response.data;

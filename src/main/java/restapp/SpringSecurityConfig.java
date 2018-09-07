@@ -37,6 +37,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/**").hasAnyRole("ADMIN","USER")
                 .and().httpBasic().realmName("ExpenceStack")
                 .authenticationEntryPoint(authenticationEntryPoint);
+                //.and().formLogin().loginPage("/login");
     }
 
 
