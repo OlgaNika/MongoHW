@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
-@PermitAll
+@CrossOrigin(origins = "*")
 public class RestappController {
 
     @Autowired
@@ -27,7 +27,7 @@ public class RestappController {
     private ExpenceRepository expenceRepository;
 
 // rooutes for Expences
-    @CrossOrigin(origins = "http://localhost:8002")
+  //  @CrossOrigin(origins = "*")
     @RequestMapping(method=RequestMethod.POST,value="/expence")
     public Expence postexpence(@RequestBody Expence expence) {
         System.out.println("postExpence="+expence);
@@ -42,15 +42,14 @@ public class RestappController {
     }
 
     //get all expenceies
-
-    @CrossOrigin(origins = "http://localhost:8002")
+  //  @CrossOrigin(origins = "http://localhost:8002")
     @RequestMapping(method = RequestMethod.GET, value = "/expence")
     public List<Expence> listAllExpence() {
         System.out.println("listAllExpence");
         return expenceRepository.findAll();
     }
 
-    @CrossOrigin(origins = "http://localhost:8002")
+  //  @CrossOrigin(origins = "http://localhost:8002")
     @RequestMapping(method = RequestMethod.GET, value = "/expenceForThisMonth/{month}")
     public List<Expence> expenceForParticularMonth(@PathVariable int month) {
         if (month<1 || month>12) month = LocalDateTime.now().getMonthValue();
@@ -78,6 +77,7 @@ public class RestappController {
         return "redirect:/";
     }
 
+  //  @CrossOrigin(origins = "http://localhost:8002")
     @RequestMapping(method = RequestMethod.GET, value = "/userDetails")
     public UserDetails getUserDeatils(){
         UserDetails userDetails =
@@ -90,7 +90,7 @@ public class RestappController {
 
 
     // get all expenceies for partucular type for this month
-    @CrossOrigin(origins = "*")
+  //  @CrossOrigin(origins = "http://localhost:8002")
     @RequestMapping(method = RequestMethod.GET, value = "/expenceByType/{type}/{month}")
     public List<Expence> expenceByTypeForMonth(@PathVariable String type,@PathVariable int month) {
         if (month<1 || month>12) month = LocalDateTime.now().getMonthValue();
@@ -101,7 +101,7 @@ public class RestappController {
     //TODO get total by Type for mounth
 
     //get all expenceies for the Report by ReportId
-    @CrossOrigin(origins = "*")
+ //   @CrossOrigin(origins = "http://localhost:8002")
     @RequestMapping(method = RequestMethod.GET, value = "/expence/byReportid/{id}")
     public List<Expence> listExpenceByReport(@PathVariable String id) {
         System.out.println("Reportid="+id);
@@ -109,7 +109,7 @@ public class RestappController {
     }
 
 //modify expence's data
-    @CrossOrigin(origins = "*")
+  //  @CrossOrigin(origins = "http://localhost:8002")
     @RequestMapping(method = RequestMethod.PUT, value = "/expence/{id}")
     public String updateExpence(@PathVariable String id, @RequestBody Expence expenceFromClient) {
         System.out.println("Update expence/{id} expenceId="+id);
@@ -137,14 +137,12 @@ public class RestappController {
     }
 
 
-    @CrossOrigin(origins = "*")
     @RequestMapping(method = RequestMethod.GET, value = "/expence/{id}")
     public Expence expencebyId(@PathVariable String id) {
         System.out.println("expence/{id} ExpenceId="+id);
         return expenceRepository.findByid(id);
     }
 
-    @CrossOrigin(origins = "*")
     @RequestMapping(method = RequestMethod.DELETE, value = "/expence/{id}")
     public String deleteExpence(@PathVariable String id){
         Expence expence = expenceRepository.findByid(id);
@@ -154,7 +152,6 @@ public class RestappController {
     }
 
 //Routes for reports
-    @CrossOrigin(origins = "*")
     @RequestMapping(method=RequestMethod.POST,value="/report")
     public Report postReport(@RequestBody Report report) {
         System.out.println("postReport="+report);
@@ -163,7 +160,6 @@ public class RestappController {
         return report;
     }
 
-    @CrossOrigin(origins = "*")
     @RequestMapping(method = RequestMethod.PUT, value = "/report/{id}")
     public String updateReport(@PathVariable String id, @RequestBody Report reportFromClient) {
         System.out.println("Update report/{id} reportId="+id);
@@ -180,21 +176,18 @@ public class RestappController {
 
     }
 
-    @CrossOrigin(origins = "*")
     @RequestMapping(method=RequestMethod.GET,value="/report")
     public List<Report> getAllReports() {
         System.out.println("getAllReports");
         return reportRepository.findAll();
     }
 
-    @CrossOrigin(origins = "*")
     @RequestMapping(method = RequestMethod.GET, value = "/report/{id}")
     public Report reportbyId(@PathVariable String id) {
         System.out.println("report/{id} reportId="+id);
         return reportRepository.findByid(id);
     }
 
-    @CrossOrigin(origins = "*")
     @RequestMapping(method = RequestMethod.DELETE, value = "/report/{id}")
     public String deleteReport(@PathVariable String id){
         Report report = reportRepository.findByid(id);
