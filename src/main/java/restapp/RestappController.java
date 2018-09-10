@@ -1,6 +1,5 @@
 package restapp;
 
-
 import model.Expence;
 import model.Report;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +9,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.security.PermitAll;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.time.LocalDateTime;
@@ -27,7 +25,6 @@ public class RestappController {
     private ExpenceRepository expenceRepository;
 
 // rooutes for Expences
-  //  @CrossOrigin(origins = "*")
     @RequestMapping(method=RequestMethod.POST,value="/expence")
     public Expence postexpence(@RequestBody Expence expence) {
         System.out.println("postExpence="+expence);
@@ -37,28 +34,35 @@ public class RestappController {
             expence.setDate(expence.getDate().plusHours(4));
         }
         expence.setCreated(LocalDateTime.now());
+        UserDetails user =
+                (UserDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        expence.setOwner(user.getUsername());
         expenceRepository.save(expence);
         return expence;
     }
 
-    //get all expenceies
-  //  @CrossOrigin(origins = "http://localhost:8002")
+    //get all expenses for ADMIN only
     @RequestMapping(method = RequestMethod.GET, value = "/expence")
     public List<Expence> listAllExpence() {
         System.out.println("listAllExpence");
-        return expenceRepository.findAll();
+        UserDetails user =
+                (UserDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        System.out.println(user.getAuthorities());
+        System.out.println("to string" +user.getAuthorities().toString());
+        if (user.getAuthorities().toString().equals("[ROLE_ADMIN]"))
+            return expenceRepository.findAll();
+        return null;
     }
 
-  //  @CrossOrigin(origins = "http://localhost:8002")
     @RequestMapping(method = RequestMethod.GET, value = "/expenceForThisMonth/{month}")
     public List<Expence> expenceForParticularMonth(@PathVariable int month) {
         if (month<1 || month>12) month = LocalDateTime.now().getMonthValue();
         System.out.println("expenceForThisMonth for month="+month);
         UserDetails user =
                 (UserDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        System.out.println("UserDetails getUsername="+user.getUsername());
-        System.out.println("UserDetails getAuthorities="+user.getAuthorities());
-        return expenceRepository.findforMonth(month);
+        System.out.println("UserDetails getUsername="+user.getUsername()+";Roles="+user.getAuthorities());
+
+        return expenceRepository.findforMonth(user.getUsername(),month);
     }
 
 
@@ -77,7 +81,6 @@ public class RestappController {
         return "redirect:/";
     }
 
-  //  @CrossOrigin(origins = "http://localhost:8002")
     @RequestMapping(method = RequestMethod.GET, value = "/userDetails")
     public UserDetails getUserDeatils(){
         UserDetails userDetails =
@@ -90,18 +93,16 @@ public class RestappController {
 
 
     // get all expenceies for partucular type for this month
-  //  @CrossOrigin(origins = "http://localhost:8002")
     @RequestMapping(method = RequestMethod.GET, value = "/expenceByType/{type}/{month}")
     public List<Expence> expenceByTypeForMonth(@PathVariable String type,@PathVariable int month) {
         if (month<1 || month>12) month = LocalDateTime.now().getMonthValue();
         System.out.println("expenceByTypeForMonth for month="+month);
-        return expenceRepository.findByTypeForMonth(type,month);
+        UserDetails user =
+                (UserDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return expenceRepository.findByTypeForMonth(user.getUsername(),type,month);
     }
-    //TODO get total for mounth
-    //TODO get total by Type for mounth
 
     //get all expenceies for the Report by ReportId
- //   @CrossOrigin(origins = "http://localhost:8002")
     @RequestMapping(method = RequestMethod.GET, value = "/expence/byReportid/{id}")
     public List<Expence> listExpenceByReport(@PathVariable String id) {
         System.out.println("Reportid="+id);
@@ -109,7 +110,6 @@ public class RestappController {
     }
 
 //modify expence's data
-  //  @CrossOrigin(origins = "http://localhost:8002")
     @RequestMapping(method = RequestMethod.PUT, value = "/expence/{id}")
     public String updateExpence(@PathVariable String id, @RequestBody Expence expenceFromClient) {
         System.out.println("Update expence/{id} expenceId="+id);
@@ -140,12 +140,16 @@ public class RestappController {
     @RequestMapping(method = RequestMethod.GET, value = "/expence/{id}")
     public Expence expencebyId(@PathVariable String id) {
         System.out.println("expence/{id} ExpenceId="+id);
-        return expenceRepository.findByid(id);
+        UserDetails user =
+                (UserDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return expenceRepository.findByidForUser(user.getUsername(),id);
     }
 
     @RequestMapping(method = RequestMethod.DELETE, value = "/expence/{id}")
     public String deleteExpence(@PathVariable String id){
-        Expence expence = expenceRepository.findByid(id);
+        UserDetails user =
+                (UserDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Expence expence = expenceRepository.findByidForUser(user.getUsername(),id);
         expenceRepository.delete(expence);
         System.out.println("Expence with id="+id+" deleted");
         return null;

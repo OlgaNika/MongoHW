@@ -15,19 +15,20 @@ public class Expence {
     private LocalDateTime created;
     private LocalDateTime modified;
     private String reportid;
+    private String owner;
 
     @Override
     public String toString() {
         return String.format(
-                "Expence[id=%s, amount='%s', category='%s', date='%s', created='%s', modified='%s',notes='%s', reportId='%s']",
-                id, amount, type, date, created, modified, notes,reportid);
+                "Expence[id=%s, amount='%s', category='%s', date='%s', created='%s', modified='%s',notes='%s', reportId='%s', owner='%s']",
+                id, amount, type, date, created, modified, notes,reportid,owner);
     }
 
     public Expence(){
 
     }
 
-    public Expence(Double amount, String type, LocalDateTime date, LocalDateTime created, LocalDateTime modified,String notes ,String report_id) {
+    public Expence(Double amount, String type, LocalDateTime date, LocalDateTime created, LocalDateTime modified,String notes ,String report_id, String owner) {
         this.amount = amount;
         this.type = type;
         this.date = date;
@@ -35,6 +36,7 @@ public class Expence {
         this.modified = modified;
         this.notes = notes;
         this.reportid = report_id;
+        this.owner = owner;
     }
 
     public String getId() {
@@ -95,5 +97,13 @@ public class Expence {
 
     public void setNotes(String notes) {
         this.notes = notes;
+    }
+
+    public String getOwner() {
+        return owner;
+    }
+
+    public void setOwner(String owner) {
+        this.owner = owner;
     }
 }
