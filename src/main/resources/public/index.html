@@ -5,13 +5,23 @@
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.2/angular.min.js"></script>
     <script src="js/public.js"></script>
     <meta charset="utf-8">
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
 </head>
 
 <body ng-controller="Expence">
 Привет <b>{{userDetails.username}}</b>!
 
 <form ng-submit="submit()">
-    Запиши расходы - это просто:<br/>
+    Запиши-ка расходы - это просто:<br/>
     <input type="number" ng-model="expence.amount" name="amount" /><br/>
     <select ng-model="expence.type" name="type" >
         <option value="Lunch-Food">Lunch-Food</option>
@@ -42,13 +52,14 @@
 <table border="1">
     <td>Сумма</td><td>Дата</td><td>Тип(Кликни на него)</td><td>Примечание</td><td>Удалить</td></tr>
     <tr ng-repeat="expence in expences">
-        <td>{{expence.amount}}</td>
-        <td>{{expence.date}}</td>
+        <td><b>{{expence.amount}}</b></td>
+        <td>{{expence.date|date:'dd/MM/yyyy'}}</td>
         <td ng-click="showByType($index)">{{expence.type}}</td>
         <td>{{expence.notes}}</td>
         <td><button ng-click="removeItem($index)" style="color:blueviolet">Remove it!</button></td>
     </tr>
 </table>
+<br>
 <p>Сумма:<b>{{getTotal()}}</b></p>
 v1.2
 

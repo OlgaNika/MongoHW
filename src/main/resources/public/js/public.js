@@ -1,6 +1,6 @@
 var myApp = angular.module('App',[]);
 
-var host='';//http://localhost:8080'
+var host='';//'http://localhost:8080' for development only
 
 myApp.controller('Expence', ['$scope','$http', function($scope,$http) {
 
