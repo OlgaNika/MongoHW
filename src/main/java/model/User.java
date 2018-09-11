@@ -2,6 +2,9 @@ package model;
 
 import org.springframework.data.annotation.Id;
 
+import java.time.LocalDateTime;
+import java.util.Arrays;
+
 public class User {
 
     @Id
@@ -9,6 +12,12 @@ public class User {
     private String username;
     private String password;
     private String[] roles;
+    private LocalDateTime created;
+    private LocalDateTime modified;
+
+    public User(){
+
+    }
 
     public User(String username, String password, String... roles) {
         this.username = username;
@@ -44,12 +53,27 @@ public class User {
         this.roles = roles;
     }
 
+    public void setModified(LocalDateTime modified) {
+        this.modified = modified;
+    }
+
+    public void setCreated(LocalDateTime created) {
+        this.created = created;
+    }
+
+    public LocalDateTime getCreated() {
+        return created;
+    }
+
+    public LocalDateTime getModified() {
+        return modified;
+    }
 
     @Override
     public String toString() {
         return String.format(
                 "{id=%s, username='%s', roles='%s'}",
-                id, username, roles[0]);
+                id, username, Arrays.toString(roles));
     }
 
 }

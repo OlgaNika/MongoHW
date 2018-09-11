@@ -2,6 +2,7 @@ package restapp;
 
 import model.Expence;
 import model.Report;
+import model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 
 @RestController
@@ -24,7 +26,28 @@ public class RestappController {
     @Autowired
     private ExpenceRepository expenceRepository;
 
-// rooutes for Expences
+    @Autowired
+    private UserRepository userRepository;
+
+
+   @RequestMapping(method=RequestMethod.POST,value="/user")
+   public User postUser(@RequestBody User user) {
+       User userFromDb=userRepository.findByUsername(user.getUsername());
+       String[] roles=user.getRoles();
+       if ((Arrays.asList(roles).contains("ADMIN"))&&(!user.getUsername().equals("admin"))){
+           System.out.println("ADMIN role can't be assigned to your user..");
+           return null;
+       }
+       if (userFromDb==null) {
+           System.out.println("ADD user=" + user);
+           user.setCreated(LocalDateTime.now());
+           userRepository.save(user);
+           return user;
+       }
+       System.out.println("User "+user.getUsername()+" is already created..");
+       return null;
+    }
+
     @RequestMapping(method=RequestMethod.POST,value="/expence")
     public Expence postexpence(@RequestBody Expence expence) {
         System.out.println("postExpence="+expence);
@@ -47,10 +70,11 @@ public class RestappController {
         System.out.println("listAllExpence");
         UserDetails user =
                 (UserDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        System.out.println(user.getAuthorities());
-        System.out.println("to string" +user.getAuthorities().toString());
+        System.out.println("Your user's roles=" +user.getAuthorities().toString());
+        //TODO fix it to work for multiple roles
         if (user.getAuthorities().toString().equals("[ROLE_ADMIN]"))
             return expenceRepository.findAll();
+        System.out.println("You user is not authorised for this call");
         return null;
     }
 
