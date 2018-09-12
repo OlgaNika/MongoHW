@@ -111,6 +111,11 @@ myApp.controller('User', ['$scope','$http', function($scope,$http) {
       };
 
       $scope.add = function() {
+
+      var a = $scope.data.userTypes.indexOf($scope.input);
+
+      if (($scope.input !== '') && (a == -1)) {
+
         $scope.data.userTypes.push($scope.input);
         $http.post(host+'/expenceTypes',$scope.data.userTypes,config).
                 then(function(response) {
@@ -122,6 +127,7 @@ myApp.controller('User', ['$scope','$http', function($scope,$http) {
 
                 });
         console.log('Added and updated='+$scope.data.userTypes);
+        }
         $scope.input = '';
 
         };
