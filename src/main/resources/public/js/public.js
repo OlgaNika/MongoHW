@@ -72,7 +72,8 @@ myApp.controller('Expence', ['$scope','$http', function($scope,$http) {
     };
     $scope.submit = function() {
         if (typeof $scope.expence.amount !== "undefined") {
-            console.log('$scope.expence.date='+$scope.expence.date);
+            console.log('$scope.expence.type='+$scope.expence.type);
+            if (typeof $scope.expence.type == "undefined") $scope.expence.type='Overall';
             $http.post(host+'/expence',$scope.expence,config).
             then(function(response) {
                 console.log('success');
