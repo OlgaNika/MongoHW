@@ -14,7 +14,7 @@ public class User {
     private String[] roles;
     private LocalDateTime created;
     private LocalDateTime modified;
-    private String[] userTypes;
+    private String[] expenceTypes;
 
     public User(){
 
@@ -70,19 +70,19 @@ public class User {
         return modified;
     }
 
-    public String[] getUserTypes() {
-        return userTypes;
+    public void setExpenceTypes(String[] expenceTypes) {
+        this.expenceTypes = expenceTypes;
     }
 
-    public void setUserTypes(String[] userTypes) {
-        this.userTypes = userTypes;
+    public String[] getExpenceTypes() {
+        return expenceTypes;
     }
 
     @Override
     public String toString() {
         return String.format(
-                "{id=%s, username='%s', roles='%s',userTypes='%s' }",
-                id, username, Arrays.toString(roles),Arrays.toString(userTypes));
+                "{id=%s, username='%s', roles='%s',expenceTypes='%s' }",
+                id, username, Arrays.toString(roles),Arrays.toString(expenceTypes));
     }
 
 }

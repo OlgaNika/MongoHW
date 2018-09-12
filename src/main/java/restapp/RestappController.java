@@ -53,6 +53,7 @@ public class RestappController {
         List<Expence> expencesSetOwner =  expenceRepository.findByNullableOwner();
         for (Expence expence:expencesSetOwner){
             expence.setOwner("admin");
+            expence.setModified(LocalDateTime.now());
             expenceRepository.save(expence);
             System.out.println("[Updated]expence="+expence);
         }
@@ -63,7 +64,19 @@ public class RestappController {
     public String[] getExpenceTypes(){
         UserDetails user =
                 (UserDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String[] expenceTypes =  userRepository.findByUsername(user.getUsername()).getUserTypes();
+        String[] expenceTypes =  userRepository.findByUsername(user.getUsername()).getExpenceTypes();
+        return expenceTypes;
+    }
+
+    @RequestMapping(method=RequestMethod.POST,value="/expenceTypes")
+    public String[] postexpence(@RequestBody String[] expenceTypes) {
+        System.out.println("POST expenceTypes="+Arrays.toString(expenceTypes));
+        UserDetails user =
+                (UserDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User userFromDB = userRepository.findByUsername(user.getUsername());
+        userFromDB.setExpenceTypes(expenceTypes);
+        userFromDB.setModified(LocalDateTime.now());
+        userRepository.save(userFromDB);
         return expenceTypes;
     }
 

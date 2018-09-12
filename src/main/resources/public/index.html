@@ -26,24 +26,24 @@
     Запиши-ка расходы - это просто:<br/>
     >><input type="number" ng-model="expence.amount" name="amount" /><br/>
     >><select ng-model="expence.type" name="type" >
-    <option value="">---Please select---</option>
+    <option value="">---Выбери на что потратил---</option>
     <option ng-repeat="option in data.userTypes" value="{{option}}">{{option}}</option>
-</select> <br/>
+</select> <a href="user.html">Изменить список</a> <br/>
     >><input type="date" ng-model="expence.date" name="date" /><br/>
     >><input type="memo" ng-model="expence.notes" name="notes" /><br/>
     >><input type="submit" id="submit" value="Add" />   <br/>
 </form>
-<h1>Сколько потратил за месяц?</h1>
+<h3>Сколько потратил за месяц?</h3>
 <button ng-click="showForThisMonth(8)" style="color:blueviolet">Август</button>
 <button ng-click="showForThisMonth(9)" style="color:blueviolet">Сентябрь</button>
 <button ng-click="showForThisMonth(0)" style="color:blueviolet">Показать текущий месяц</button>
 <table border="1">
     <td>Сумма</td><td>Дата</td><td>Тип(Кликни на него)</td><td>Примечание</td><td>Удалить</td></tr>
     <tr ng-repeat="expence in expences">
-        <td><b>{{expence.amount}}</b></td>
-        <td>{{expence.date|date:'dd/MM/yyyy'}}</td>
-        <td ng-click="showByType($index)" style="color:blueviolet">{{expence.type}}</td>
-        <td>{{expence.notes}}</td>
+        <td align="center"><b>{{expence.amount}}</b></td>
+        <td align="center">{{expence.date|date:'dd/MM/yyyy'}}</td>
+        <td ng-click="showByType($index)" style="color:blueviolet" align="left">{{expence.type}}</td>
+        <td align="left">{{expence.notes}}</td>
         <td><button ng-click="removeItem($index)" style="color:blueviolet">Remove it!</button></td>
     </tr>
 </table>
