@@ -59,6 +59,14 @@ public class RestappController {
         return expencesSetOwner;
     }
 
+    @RequestMapping(method = RequestMethod.GET, value = "/expenceTypes")
+    public String[] getExpenceTypes(){
+        UserDetails user =
+                (UserDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String[] expenceTypes =  userRepository.findByUsername(user.getUsername()).getUserTypes();
+        return expenceTypes;
+    }
+
     @RequestMapping(method=RequestMethod.POST,value="/expence")
     public Expence postexpence(@RequestBody Expence expence) {
         System.out.println("postExpence="+expence);
