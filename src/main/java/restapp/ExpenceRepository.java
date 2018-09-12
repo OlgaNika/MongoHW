@@ -20,5 +20,7 @@ public interface ExpenceRepository extends MongoRepository<Expence,String> {
     public List<Expence> findByType(String owner,String type);
     @Query("{ 'owner':'?0','type':'?1','$expr': { '$eq': [{ '$month': '$date' }, ?2 ] } }")
     public List<Expence> findByTypeForMonth(String owner,String type,int month);
+    @Query("{ 'owner':null}")
+    public List<Expence> findByNullableOwner();
 
 }

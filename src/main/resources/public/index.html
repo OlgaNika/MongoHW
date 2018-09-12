@@ -3,6 +3,8 @@
 <head>
     <title>Expencies Application</title>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.2/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
     <script src="js/public.js"></script>
     <meta charset="utf-8">
 
@@ -22,39 +24,25 @@
 
 <form ng-submit="submit()">
     Запиши-ка расходы - это просто:<br/>
-    <input type="number" ng-model="expence.amount" name="amount" /><br/>
-    <select ng-model="expence.type" name="type" >
-        <option value="Lunch-Food">Lunch-Food</option>
-        <option value="Grocery">Grocery</option>
-        <option value="Hobby">Hobby</option>
-        <option value="Overall">Overall</option>
-        <option value="Car.fuel">Car.fuel</option>
-        <option value="Car">Car</option>
-        <option value="Overall.payments">Overall.payments</option>
-        <option value="Overall.payments">Kids.payments</option>
-        <option value="Transport">Transport</option>
-        <option value="Entertainment">Entertainment</option>
-        <option value="Pharmacy">Pharmacy</option>
-        <option value="Travel">Travel</option>
-        <option value="Pharmacy">Pharmacy</option>
-        <option value="Kids">Kids</option>
-        <option value="Restorant">Restorant</option>
-        <option value="Clothes">Clothes</option>
-        <option value="Gifts">Gifts</option>
-        <option value="CountrySeat">CountrySeat</option>
-    </select> <br/>
-    <input type="date" ng-model="expence.date" name="date" /><br/>
-    <input type="memo" ng-model="expence.notes" name="notes" /><br/>
-    <input type="submit" id="submit" value="Add" />   <br/>
+    >><input type="number" ng-model="expence.amount" name="amount" /><br/>
+    >><select ng-model="expence.type" name="type" >
+    <option value="">---Please select---</option>
+    <option ng-repeat="option in data.userTypes" value="{{option}}">{{option}}</option>
+</select> <br/>
+    >><input type="date" ng-model="expence.date" name="date" /><br/>
+    >><input type="memo" ng-model="expence.notes" name="notes" /><br/>
+    >><input type="submit" id="submit" value="Add" />   <br/>
 </form>
-<h1>Что потратил в этом месяце</h1>
-<button ng-click="showForThisMonth()" style="color:blueviolet">Показать все опять</button></td>
+<h1>Сколько потратил за месяц?</h1>
+<button ng-click="showForThisMonth(8)" style="color:blueviolet">Август</button>
+<button ng-click="showForThisMonth(9)" style="color:blueviolet">Сентябрь</button>
+<button ng-click="showForThisMonth(0)" style="color:blueviolet">Показать текущий месяц</button>
 <table border="1">
     <td>Сумма</td><td>Дата</td><td>Тип(Кликни на него)</td><td>Примечание</td><td>Удалить</td></tr>
     <tr ng-repeat="expence in expences">
         <td><b>{{expence.amount}}</b></td>
         <td>{{expence.date|date:'dd/MM/yyyy'}}</td>
-        <td ng-click="showByType($index)">{{expence.type}}</td>
+        <td ng-click="showByType($index)" style="color:blueviolet">{{expence.type}}</td>
         <td>{{expence.notes}}</td>
         <td><button ng-click="removeItem($index)" style="color:blueviolet">Remove it!</button></td>
     </tr>

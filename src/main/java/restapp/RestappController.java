@@ -47,6 +47,17 @@ public class RestappController {
        System.out.println("User "+user.getUsername()+" is already created..");
        return null;
     }
+///for migration from v1 to v1.2 only - to be removed later
+    @RequestMapping(method = RequestMethod.GET, value = "/upgrade/setOwner")
+    public List<Expence> setOwner(){
+        List<Expence> expencesSetOwner =  expenceRepository.findByNullableOwner();
+        for (Expence expence:expencesSetOwner){
+            expence.setOwner("admin");
+            expenceRepository.save(expence);
+            System.out.println("[Updated]expence="+expence);
+        }
+        return expencesSetOwner;
+    }
 
     @RequestMapping(method=RequestMethod.POST,value="/expence")
     public Expence postexpence(@RequestBody Expence expence) {

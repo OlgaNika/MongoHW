@@ -1,14 +1,39 @@
 var myApp = angular.module('App',[]);
 
-var host='';//'http://localhost:8080' for development only
+var host='';
+
 
 myApp.controller('Expence', ['$scope','$http', function($scope,$http) {
 
 var config = {headers: {
-            //'Authorization': 'Basic ',//for development only
+           // 'Authorization': 'Basic ',//for development only
             'Content-Type': 'application/json'
         }
     };
+    $scope.currmonth = 0;
+
+    $scope.data = {
+        userTypes: [
+        'Lunch-Food',
+        'Grocery',
+        'Hobby',
+        'Overall',
+        'Car.fuel',
+        'Kids',
+        'Clothes',
+        'Overall.payments',
+        'Kids.payments',
+        'Transport',
+        'Entertainment',
+        'Travel',
+        'Car',
+        'Pharmacy',
+        'Restorant',
+        'Gifts',
+        'CountrySeat'
+        ]
+       };
+
 
     console.log('Expence started');
     $http.get(host+'/userDetails', config).
@@ -19,15 +44,16 @@ var config = {headers: {
                 console.log('error!');
                 console.log(response);
                 });
-    $http.get(host+'/expenceForThisMonth/0',config).
+    $http.get(host+'/expenceForThisMonth/'+$scope.currmonth,config).
     then(function(response) {
         $scope.expences = response.data;
     });
 
 
-    $scope.showForThisMonth = function() {
-        console.log('show for this month');
-        $http.get(host+'/expenceForThisMonth/0',config).
+    $scope.showForThisMonth = function(month) {
+        console.log('show for month='+month);
+        $scope.currmonth = month;
+        $http.get(host+'/expenceForThisMonth/'+$scope.currmonth,config).
         then(function(response) {
         $scope.expences = response.data;
         console.log('expencies reloaded');
@@ -36,7 +62,7 @@ var config = {headers: {
 
     $scope.showByType = function(index) {
         console.log('showByType for index='+index+';type='+$scope.expences[index].type);
-        $http.get(host+'/expenceByType/'+$scope.expences[index].type+'/0',config).
+        $http.get(host+'/expenceByType/'+$scope.expences[index].type+'/'+$scope.currmonth,config).
             then(function(response) {
                 $scope.expences = response.data;
                 console.log('expencies reloaded by type for this month');

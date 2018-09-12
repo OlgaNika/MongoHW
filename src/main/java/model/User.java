@@ -14,6 +14,7 @@ public class User {
     private String[] roles;
     private LocalDateTime created;
     private LocalDateTime modified;
+    private String[] userTypes;
 
     public User(){
 
@@ -69,11 +70,19 @@ public class User {
         return modified;
     }
 
+    public String[] getUserTypes() {
+        return userTypes;
+    }
+
+    public void setUserTypes(String[] userTypes) {
+        this.userTypes = userTypes;
+    }
+
     @Override
     public String toString() {
         return String.format(
-                "{id=%s, username='%s', roles='%s'}",
-                id, username, Arrays.toString(roles));
+                "{id=%s, username='%s', roles='%s',userTypes='%s' }",
+                id, username, Arrays.toString(roles),Arrays.toString(userTypes));
     }
 
 }
