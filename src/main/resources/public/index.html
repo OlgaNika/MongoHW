@@ -24,14 +24,14 @@
 
 <form ng-submit="submit()">
     Запиши-ка расходы - это просто:<br/>
-    >><input type="number" ng-model="expence.amount" name="amount" /><br/>
-    >><select ng-model="expence.type" name="type" >
+    >Сумма><input type="number" ng-model="expence.amount" name="amount" /><br/>
+    >>Тип>>><select ng-model="expence.type" name="type" >
     <option value="">---Выбери на что потратил---</option>
     <option ng-repeat="option in data.userTypes" value="{{option}}">{{option}}</option>
 </select> <a href="user.html">Изменить список</a> <br/>
-    >><input type="date" ng-model="expence.date" name="date" /><br/>
-    >><input type="memo" ng-model="expence.notes" name="notes" /><br/>
-    >><input type="submit" id="submit" value="Add" />   <br/>
+    >>Дата>><input type="date" ng-model="expence.date" name="date" /><br/>
+    >Детали><input type="memo" ng-model="expence.notes" name="notes" /><br/>
+    >>>>>>>>>>><input type="submit" id="submit" value="Добавить" />   <br/>
 </form>
 <h3>Сколько потратил за месяц?</h3>
 <button ng-click="showForThisMonth(8)" style="color:blueviolet">Август</button>
