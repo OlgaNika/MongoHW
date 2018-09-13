@@ -11,7 +11,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.NoOpPasswordEncoder;
+//import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 
 
 @Configuration
@@ -19,17 +19,26 @@ import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 @EnableGlobalMethodSecurity(securedEnabled=true)
 public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @SuppressWarnings("deprecation")
+   /* @SuppressWarnings("deprecation")
     @Bean
     public static NoOpPasswordEncoder passwordEncoder() {
         return (NoOpPasswordEncoder) NoOpPasswordEncoder.getInstance();
-    }
+    }*/
 
     @Autowired
     private AuthenticationEntryPoint authenticationEntryPoint;
 
     @Autowired
     private UserDetailsServiceImp userDetailsServiceImp;
+
+    @Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
+
+
+    public SpringSecurityConfig(UserDetailsServiceImp userDetailsServiceImp, BCryptPasswordEncoder bCryptPasswordEncoder) {
+        this.userDetailsServiceImp = userDetailsServiceImp;
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -45,6 +54,11 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(WebSecurity web) throws Exception {
         web.ignoring().antMatchers("/user");
+    }
+
+    @Override
+    public void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(userDetailsServiceImp).passwordEncoder(bCryptPasswordEncoder);
     }
 
 /*

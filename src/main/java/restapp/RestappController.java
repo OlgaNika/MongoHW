@@ -29,6 +29,8 @@ public class RestappController {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private UserDetailsServiceImp userDetailsServiceImp;
 
    @RequestMapping(method=RequestMethod.POST,value="/user")
    public User postUser(@RequestBody User user) {
@@ -41,7 +43,7 @@ public class RestappController {
        if (userFromDb==null) {
            System.out.println("ADD user=" + user);
            user.setCreated(LocalDateTime.now());
-           userRepository.save(user);
+           userDetailsServiceImp.createUser(user);
            return user;
        }
        System.out.println("User "+user.getUsername()+" is already created..");

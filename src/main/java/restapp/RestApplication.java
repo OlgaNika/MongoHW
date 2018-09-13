@@ -2,6 +2,8 @@ package restapp;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @SpringBootApplication
 public class RestApplication  {
@@ -15,6 +17,11 @@ public class RestApplication  {
     //rest api supports this via GET /expence call.
     public static void main(String[] args) {
         SpringApplication.run(RestApplication.class, args);
+    }
+
+    @Bean
+    public BCryptPasswordEncoder bCryptPasswordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 
 

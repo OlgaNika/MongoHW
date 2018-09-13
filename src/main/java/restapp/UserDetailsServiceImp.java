@@ -14,6 +14,16 @@ public class UserDetailsServiceImp implements UserDetailsService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
+
+    @Autowired
+    public UserDetailsServiceImp(UserRepository userRepository,
+                           BCryptPasswordEncoder bCryptPasswordEncoder) {
+        this.userRepository = userRepository;
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+    }
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
@@ -24,13 +34,30 @@ public class UserDetailsServiceImp implements UserDetailsService {
         org.springframework.security.core.userdetails.User.UserBuilder builder = null;
         if (user != null) {
             builder = org.springframework.security.core.userdetails.User.withUsername(username);
-            builder.password(new BCryptPasswordEncoder().encode(user.getPassword()));
+         //   builder.password(new BCryptPasswordEncoder().encode(user.getPassword()));
+            builder.password(user.getPassword());
             builder.roles(user.getRoles());
         } else {
             throw new UsernameNotFoundException("User not found.");
         }
 
         return builder.build();
+    }
+
+   // @Override
+    public User createUser(User user) {
+       // User returnValue = new User();
+       // ...
+
+        // Generate secure password
+        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+        //UserEntity userEntity = new UserEntity();
+      //  BeanUtils.copyProperties(userDto, userEntity);
+        // Record data into a database
+       // userEntity = userRepository.save(userEntity);
+
+         //...
+        return userRepository.save(user);
     }
 
     private User findUserbyUsername(String username) {
