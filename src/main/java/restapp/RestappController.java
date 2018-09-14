@@ -3,6 +3,8 @@ package restapp;
 import model.Expence;
 import model.Report;
 import model.User;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -32,21 +34,24 @@ public class RestappController {
     @Autowired
     private UserDetailsServiceImp userDetailsServiceImp;
 
-   @RequestMapping(method=RequestMethod.POST,value="/user")
+    private static final Logger logger = LogManager.getLogger(RestappController.class);
+
+
+    @RequestMapping(method=RequestMethod.POST,value="/user")
    public User postUser(@RequestBody User user) {
        User userFromDb=userRepository.findByUsername(user.getUsername());
        String[] roles=user.getRoles();
        if ((Arrays.asList(roles).contains("ADMIN"))&&(!user.getUsername().equals("admin"))){
-           System.out.println("ADMIN role can't be assigned to your user..");
+           logger.info("ADMIN role can't be assigned to your user..");
            return null;
        }
        if (userFromDb==null) {
-           System.out.println("ADD user=" + user);
+           logger.info("ADD user=" + user);
            user.setCreated(LocalDateTime.now());
            userDetailsServiceImp.createUser(user);
            return user;
        }
-       System.out.println("User "+user.getUsername()+" is already created..");
+       logger.info("User "+user.getUsername()+" is already created..");
        return null;
     }
 ///for migration from v1 to v1.2 only - to be removed later
@@ -57,7 +62,7 @@ public class RestappController {
             expence.setOwner("admin");
             expence.setModified(LocalDateTime.now());
             expenceRepository.save(expence);
-            System.out.println("[Updated]expence="+expence);
+            logger.info("[Updated]expence="+expence);
         }
         return expencesSetOwner;
     }
@@ -72,7 +77,7 @@ public class RestappController {
 
     @RequestMapping(method=RequestMethod.POST,value="/expenceTypes")
     public String[] postexpence(@RequestBody String[] expenceTypes) {
-        System.out.println("POST expenceTypes="+Arrays.toString(expenceTypes));
+        logger.info("POST expenceTypes="+Arrays.toString(expenceTypes));
         UserDetails user =
                 (UserDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User userFromDB = userRepository.findByUsername(user.getUsername());
@@ -84,7 +89,7 @@ public class RestappController {
 
     @RequestMapping(method=RequestMethod.POST,value="/expence")
     public Expence postexpence(@RequestBody Expence expence) {
-        System.out.println("postExpence="+expence);
+        logger.info("postExpence="+expence);
         if(expence.getDate()==null) {
             expence.setDate(LocalDateTime.now());
         } else {
@@ -101,24 +106,24 @@ public class RestappController {
     //get all expenses for ADMIN only
     @RequestMapping(method = RequestMethod.GET, value = "/expence")
     public List<Expence> listAllExpence() {
-        System.out.println("listAllExpence");
+        logger.info("listAllExpence");
         UserDetails user =
                 (UserDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        System.out.println("Your user's roles=" +user.getAuthorities().toString());
+        logger.info("Your user's roles=" +user.getAuthorities().toString());
         //TODO fix it to work for multiple roles
         if (user.getAuthorities().toString().equals("[ROLE_ADMIN]"))
             return expenceRepository.findAll();
-        System.out.println("You user is not authorised for this call");
+        logger.info("You user is not authorised for this call");
         return null;
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/expenceForThisMonth/{month}")
     public List<Expence> expenceForParticularMonth(@PathVariable int month) {
         if (month<1 || month>12) month = LocalDateTime.now().getMonthValue();
-        System.out.println("expenceForThisMonth for month="+month);
+        logger.info("expenceForThisMonth for month="+month);
         UserDetails user =
                 (UserDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        System.out.println("UserDetails getUsername="+user.getUsername()+";Roles="+user.getAuthorities());
+        logger.info("UserDetails getUsername="+user.getUsername()+";Roles="+user.getAuthorities());
 
         return expenceRepository.findforMonth(user.getUsername(),month);
     }
@@ -128,12 +133,12 @@ public class RestappController {
     public String logoutPage (HttpServletRequest request, HttpServletResponse response) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
-        System.out.println("logout procedure started");
+        logger.info("logout procedure started");
         if (auth != null){
-            System.out.println("logout procedure");
+            logger.info("logout procedure");
             new SecurityContextLogoutHandler().logout(request, response, auth);
         } else {
-            System.out.println("Authentication is null");
+            logger.info("Authentication is null");
 
         }
         return "redirect:/";
@@ -143,8 +148,8 @@ public class RestappController {
     public UserDetails getUserDeatils(){
         UserDetails userDetails =
                 (UserDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        System.out.println("userDetails getUsername="+userDetails.getUsername());
-        System.out.println("userDetails getAuthorities="+userDetails.getAuthorities());
+        logger.info("userDetails getUsername="+userDetails.getUsername());
+        logger.info("userDetails getAuthorities="+userDetails.getAuthorities());
         return userDetails;
     }
 
@@ -154,7 +159,7 @@ public class RestappController {
     @RequestMapping(method = RequestMethod.GET, value = "/expenceByType/{type}/{month}")
     public List<Expence> expenceByTypeForMonth(@PathVariable String type,@PathVariable int month) {
         if (month<1 || month>12) month = LocalDateTime.now().getMonthValue();
-        System.out.println("expenceByTypeForMonth for month="+month);
+        logger.info("expenceByTypeForMonth for month="+month);
         UserDetails user =
                 (UserDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return expenceRepository.findByTypeForMonth(user.getUsername(),type,month);
@@ -163,14 +168,14 @@ public class RestappController {
     //get all expenceies for the Report by ReportId
     @RequestMapping(method = RequestMethod.GET, value = "/expence/byReportid/{id}")
     public List<Expence> listExpenceByReport(@PathVariable String id) {
-        System.out.println("Reportid="+id);
+        logger.info("Reportid="+id);
         return expenceRepository.findByReportid(id);
     }
 
 //modify expence's data
     @RequestMapping(method = RequestMethod.PUT, value = "/expence/{id}")
     public String updateExpence(@PathVariable String id, @RequestBody Expence expenceFromClient) {
-        System.out.println("Update expence/{id} expenceId="+id);
+        logger.info("Update expence/{id} expenceId="+id);
         Expence expenceFromDb = expenceRepository.findByid(id);
         if(expenceFromClient.getAmount()!=null) {
             expenceFromDb.setAmount(expenceFromClient.getAmount());
@@ -197,7 +202,7 @@ public class RestappController {
 
     @RequestMapping(method = RequestMethod.GET, value = "/expence/{id}")
     public Expence expencebyId(@PathVariable String id) {
-        System.out.println("expence/{id} ExpenceId="+id);
+        logger.info("expence/{id} ExpenceId="+id);
         UserDetails user =
                 (UserDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return expenceRepository.findByidForUser(user.getUsername(),id);
@@ -209,14 +214,14 @@ public class RestappController {
                 (UserDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Expence expence = expenceRepository.findByidForUser(user.getUsername(),id);
         expenceRepository.delete(expence);
-        System.out.println("Expence with id="+id+" deleted");
+        logger.info("Expence with id="+id+" deleted");
         return null;
     }
 
 //Routes for reports
     @RequestMapping(method=RequestMethod.POST,value="/report")
     public Report postReport(@RequestBody Report report) {
-        System.out.println("postReport="+report);
+        logger.info("postReport="+report);
         report.setCreated(LocalDateTime.now());
         reportRepository.save(report);
         return report;
@@ -224,15 +229,15 @@ public class RestappController {
 
     @RequestMapping(method = RequestMethod.PUT, value = "/report/{id}")
     public String updateReport(@PathVariable String id, @RequestBody Report reportFromClient) {
-        System.out.println("Update report/{id} reportId="+id);
+        logger.info("Update report/{id} reportId="+id);
         Report reportFromDb = reportRepository.findByid(id);
         if(reportFromClient.getName()==null) {
-            System.out.println("Report name is empty");
+            logger.info("Report name is empty");
             return "Nothing to Update";
         } else {
             reportFromDb.setName(reportFromClient.getName());
             reportRepository.save(reportFromDb);
-            System.out.println("report/{id} reportId="+id+" is updated with name "+reportFromClient.getName());
+            logger.info("report/{id} reportId="+id+" is updated with name "+reportFromClient.getName());
             return reportFromDb.toString();
         }
 
@@ -240,13 +245,13 @@ public class RestappController {
 
     @RequestMapping(method=RequestMethod.GET,value="/report")
     public List<Report> getAllReports() {
-        System.out.println("getAllReports");
+        logger.info("getAllReports");
         return reportRepository.findAll();
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/report/{id}")
     public Report reportbyId(@PathVariable String id) {
-        System.out.println("report/{id} reportId="+id);
+        logger.info("report/{id} reportId="+id);
         return reportRepository.findByid(id);
     }
 
@@ -254,7 +259,7 @@ public class RestappController {
     public String deleteReport(@PathVariable String id){
         Report report = reportRepository.findByid(id);
         reportRepository.delete(report);
-        System.out.println("Report "+id+" is deleted");
+        logger.info("Report "+id+" is deleted");
         return null;
     }
 

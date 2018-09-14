@@ -1,6 +1,8 @@
 package restapp;
 
 import model.User;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -16,6 +18,9 @@ public class UserDetailsServiceImp implements UserDetailsService {
 
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
+
+    private static final Logger logger = LogManager.getLogger(UserDetailsServiceImp.class);
+
 
     @Autowired
     public UserDetailsServiceImp(UserRepository userRepository,
@@ -61,9 +66,9 @@ public class UserDetailsServiceImp implements UserDetailsService {
     }
 
     private User findUserbyUsername(String username) {
-        System.out.println("findUserbyUsername="+username);
+        logger.info("findUserbyUsername="+username);
         User userFound = userRepository.findByUsername(username);
-        System.out.println("userRepository.findByUsername(username)"+userFound);
+        logger.info("userRepository.findByUsername(username)"+userFound);
         return userFound;
 
     }
