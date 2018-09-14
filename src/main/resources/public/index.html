@@ -24,16 +24,17 @@
 
 <form ng-submit="submit()">
     Запиши-ка расходы - это просто:<br/>
-    >Сумма><input type="number" ng-model="expence.amount" name="amount" /><br/>
-    >>Тип>>><select ng-model="expence.type" name="type" >
+    ><b>Сумма</b>><input type="number" ng-model="expence.amount" name="amount" /><br/>
+    >><b>Тип</b>>>><select ng-model="expence.type" name="type" >
     <option value="">---Выбери на что потратил---</option>
     <option ng-repeat="option in data.userTypes" value="{{option}}">{{option}}</option>
-</select> <a href="user.html">Изменить список</a> <br/>
-    >>Дата>><input type="date" ng-model="expence.date" name="date" /><br/>
-    >Детали><input type="memo" ng-model="expence.notes" name="notes" /><br/>
+        </select> <a href="user.html">Изменить список</a> <br/>
+    >><b>Дата</b>>><input type="date" ng-model="expence.date" name="date" /><br/>
+    ><b>Детали</b>><input type="memo" ng-model="expence.notes" name="notes" /><br/>
     >>>>>>>>>>><input type="submit" id="submit" value="Добавить" />   <br/>
 </form>
-<h3>Сколько потратил за месяц?</h3>
+<br/>
+<b>Сколько потратил за месяц?</b>>> Сумма:<b>{{getTotal()}}</b></br>
 <button ng-click="showForThisMonth(8)" style="color:blueviolet">Август</button>
 <button ng-click="showForThisMonth(9)" style="color:blueviolet">Сентябрь</button>
 <button ng-click="showForThisMonth(0)" style="color:blueviolet">Показать текущий месяц</button>
@@ -49,7 +50,7 @@
 </table>
 <br>
 <p>Сумма:<b>{{getTotal()}}</b></p>
-v1.2
+v1.2.3
 
 
 
