@@ -42,16 +42,16 @@ public class RestappController {
        User userFromDb=userRepository.findByUsername(user.getUsername());
        String[] roles=user.getRoles();
        if ((Arrays.asList(roles).contains("ADMIN"))&&(!user.getUsername().equals("admin"))){
-           logger.info("ADMIN role can't be assigned to your user..");
+           logger.info("Create user:ADMIN role can't be assigned to your user..");
            return null;
        }
        if (userFromDb==null) {
-           logger.info("ADD user=" + user);
            user.setCreated(LocalDateTime.now());
            userDetailsServiceImp.createUser(user);
+           logger.info("Created user user=" + user);
            return user;
        }
-       logger.info("User "+user.getUsername()+" is already created..");
+       logger.info("Create user: User "+user.getUsername()+" is already created..");
        return null;
     }
 ///for migration from v1 to v1.2 only - to be removed later
@@ -62,7 +62,7 @@ public class RestappController {
             expence.setOwner("admin");
             expence.setModified(LocalDateTime.now());
             expenceRepository.save(expence);
-            logger.info("[Updated]expence="+expence);
+            logger.info("SetOwner:[Updated]expence="+expence);
         }
         return expencesSetOwner;
     }
@@ -106,24 +106,24 @@ public class RestappController {
     //get all expenses for ADMIN only
     @RequestMapping(method = RequestMethod.GET, value = "/expence")
     public List<Expence> listAllExpence() {
-        logger.info("listAllExpence");
+        logger.info("ADMIN's method:listAllExpence");
         UserDetails user =
                 (UserDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         logger.info("Your user's roles=" +user.getAuthorities().toString());
         //TODO fix it to work for multiple roles
         if (user.getAuthorities().toString().equals("[ROLE_ADMIN]"))
             return expenceRepository.findAll();
-        logger.info("You user is not authorised for this call");
+        logger.info("You user is not authorised for listAllExpence call");
         return null;
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/expenceForThisMonth/{month}")
     public List<Expence> expenceForParticularMonth(@PathVariable int month) {
         if (month<1 || month>12) month = LocalDateTime.now().getMonthValue();
-        logger.info("expenceForThisMonth for month="+month);
+        logger.info("expenceForParticularMonth: expenceForThisMonth for month="+month);
         UserDetails user =
                 (UserDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        logger.info("UserDetails getUsername="+user.getUsername()+";Roles="+user.getAuthorities());
+        logger.info("expenceForParticularMonth:UserDetails getUsername="+user.getUsername()+";Roles="+user.getAuthorities());
 
         return expenceRepository.findforMonth(user.getUsername(),month);
     }
@@ -148,8 +148,8 @@ public class RestappController {
     public UserDetails getUserDeatils(){
         UserDetails userDetails =
                 (UserDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        logger.info("userDetails getUsername="+userDetails.getUsername());
-        logger.info("userDetails getAuthorities="+userDetails.getAuthorities());
+        logger.info("userDetails: getUsername="+userDetails.getUsername());
+        logger.info("userDetails: getAuthorities="+userDetails.getAuthorities());
         return userDetails;
     }
 
