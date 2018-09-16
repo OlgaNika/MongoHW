@@ -1,9 +1,9 @@
 var myApp = angular.module('App',[]);
 
-var host='';//'http://localhost:8080';
+var host='';//http://localhost:8080';
 
 var config = {headers: {
-           // 'Authorization': 'Basic ',//for development only
+          //  'Authorization': 'Basic ',//for development only
             'Content-Type': 'application/json'
         }
     };
@@ -59,19 +59,22 @@ myApp.controller('Expence', ['$scope','$http', function($scope,$http) {
             });
     };
 
-    $scope.removeItem = function(index) {
-        console.log('delete index='+index+';id='+$scope.expences[index].id);
-        $http.delete(host+'/expence/'+$scope.expences[index].id,config).
+    $scope.removeItem = function(expence) {
+        console.log('delete expence:'+expence+';id='+expence.id);
+        $http.delete(host+'/expence/'+expence.id,config).
             then(function(response) {
                 console.log(response);
+               var index = $scope.expences.indexOf(expence);
+               console.log('index='+index);
                 $scope.expences.splice(index, 1);
+
             }, function (response) {
                 console.log('error!');
                 console.log(response);
             });
     };
     $scope.submit = function() {
-        if (typeof $scope.expence.amount !== "undefined") {
+            console.log('$scope.expence.amount'+ $scope.expence.amount);
             console.log('$scope.expence.type='+$scope.expence.type);
             if (typeof $scope.expence.type == "undefined") $scope.expence.type='Overall';
             $http.post(host+'/expence',$scope.expence,config).
@@ -80,13 +83,17 @@ myApp.controller('Expence', ['$scope','$http', function($scope,$http) {
                 console.log(response);
                 $scope.expences.push(response.data);
 
+                $scope.expence.amount = '';
+
+               // $scope.expence = '';
+
             }, function (response) {
                 console.log('error');
                 console.log(response);
                 console.log($scope.expence);
 
             });
-        };
+
     };
 
     $scope.getTotal = function(){

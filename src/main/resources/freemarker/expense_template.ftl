@@ -17,6 +17,8 @@
   <#list myexpenses as expenses>
       <h2><a href="/expenses/${expenses["permalink"]}">${expenses["title"]}</a></h2>
       Posted ${expenses["date"]?datetime} <i>By ${expenses["author"]}</i><br>
+     Description :   ${expenses["description"]}
+      <br>
       Comments:
       <#if expenses["comments"]??>
           <#assign numComments = expenses["comments"]?size>

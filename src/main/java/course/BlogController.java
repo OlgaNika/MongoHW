@@ -379,17 +379,17 @@ public class BlogController {
                 if (expenses == null) {
                     response.redirect("/expenses_not_found");
                 }
-                else {
+               else {
                     // empty comment to hold new comment in form at bottom of blog entry detail page
-                    SimpleHash newComment = new SimpleHash();
-                    newComment.put("name", "");
-                    newComment.put("email", "");
-                    newComment.put("body", "");
+                 //   SimpleHash newComment = new SimpleHash();
+                  //  newComment.put("name", "");
+                  //  newComment.put("email", "");
+                 //   newComment.put("body", "");
 
                     SimpleHash root = new SimpleHash();
 
                     root.put("post", expenses);
-                    root.put("comments", newComment);
+                //    root.put("comments", newComment);
 
                     template.process(root, writer);
                 }
@@ -492,6 +492,8 @@ public class BlogController {
                 String title = StringEscapeUtils.escapeHtml4(request.queryParams("subject"));
                 String post = StringEscapeUtils.escapeHtml4(request.queryParams("body"));
                 String tags = StringEscapeUtils.escapeHtml4(request.queryParams("tags"));
+                String description = StringEscapeUtils.escapeHtml4(request.queryParams("description"));
+               //description
 
                 String username = sessionDAO.findUserNameBySessionId(getSessionCookie(request));
 
@@ -506,16 +508,17 @@ public class BlogController {
                     root.put("username", username);
                     root.put("tags", tags);
                     root.put("body", post);
+                    root.put("description", description);
                     template.process(root, writer);
                 }
                 else {
                     // extract tags
-                    ArrayList<String> tagsArray = extractTags(tags);
+                   ArrayList<String> tagsArray = extractTags(tags);
 
                     // substitute some <p> for the paragraph breaks
                     post = post.replaceAll("\\r?\\n", "<p>");
 
-                    String permalink = expenseDAO.addExpense(title, post, tagsArray, username);
+                    String permalink = expenseDAO.addExpense(title, post, tagsArray, username, description);
 
                     // now redirect to the blog permalink
                     response.redirect("/expenses/" + permalink);

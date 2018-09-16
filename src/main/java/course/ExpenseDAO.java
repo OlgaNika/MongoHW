@@ -41,17 +41,17 @@ public class ExpenseDAO {
 
     public List<Document> findByDateDescending(int limit) {
 
-        List<Document> expencies = null;
+        List<Document> expenses = null;
 
         Bson sort = descending("created");
 
-        //expencies=expensesCollection.find(eq("report_id",report_id)).sort(sort).limit(limit).into(new ArrayList<Document>());
-        expencies=expensesCollection.find().sort(sort).limit(limit).into(new ArrayList<Document>());
+        //expenses=expensesCollection.find(eq("report_id",report_id)).sort(sort).limit(limit).into(new ArrayList<Document>());
+        expenses=expensesCollection.find().sort(sort).limit(limit).into(new ArrayList<Document>());
 
-        return expencies;
+        return expenses;
     }
 
-    public String addExpense(String title, String body, List tags, String username) {
+    public String addExpense(String title, String body, List tags, String username, String description ) {
 
         System.out.println("inserting expenses entry " + title + " " + body);
 
@@ -63,7 +63,8 @@ public class ExpenseDAO {
         // Build the post object and insert it
         Document expense = new Document();
         ArrayList<Document> comments=new ArrayList();
-        expense.append("author",username).append("body",body).append("permalink",permalink).append("tags",tags).append("comments",comments).append("date",new Date()).append("title",title);
+        expense.append("author",username).append("body",body).append("permalink",permalink).append("tags",tags).append("comments",comments).append("date",new Date()).append("title",title)
+                .append("description",description);
         expensesCollection.insertOne(expense);
         System.out.println("adding post ="+expense);
 
